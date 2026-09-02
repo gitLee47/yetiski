@@ -220,7 +220,7 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
 
         yetiChaseElapsed += dt
         let speed = difficulty.scrollSpeed(atDistance: currentScore)
-            * difficulty.yetiSpeedMultiplier(atDistance: currentScore)
+            + difficulty.yetiClosingSpeed(atDistance: currentScore)
         yeti.position.y += speed * CGFloat(dt)
         yeti.stepHoming(towardX: skier.position.x, deltaTime: dt)
 
@@ -234,7 +234,7 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         let yeti = YetiNode()
         yeti.position = CGPoint(x: skier.position.x, y: -size.height / 2 - 90)
         yeti.zPosition = 8
-        yeti.turnSpeed = 260 + 120 * CGFloat(difficulty.yetiSpeedMultiplier(atDistance: currentScore) - 1)
+        yeti.turnSpeed = difficulty.yetiTurnSpeed(atDistance: currentScore)
         addChild(yeti)
         activeYeti = yeti
         yetiChaseElapsed = 0

@@ -25,10 +25,24 @@ struct DifficultyManager {
         return baseScrollSpeed + (maxScrollSpeed - baseScrollSpeed) * t
     }
 
-    /// How much faster than the world scroll speed the yeti sprints.
-    func yetiSpeedMultiplier(atDistance distance: Int) -> CGFloat {
+    /// Extra speed (points/second) the yeti moves *above* the world scroll
+    /// speed while sprinting — this is what closes the gap toward the skier.
+    /// Kept as a flat add-on rather than a multiplier on scroll speed, so it
+    /// doesn't compound into an unbeatable sprint once the slope gets fast;
+    /// early on this gives several seconds of visible approach to react to,
+    /// and even at the hardest setting there's still a couple of seconds.
+    func yetiClosingSpeed(atDistance distance: Int) -> CGFloat {
         let t = speedProgress(atDistance: distance)
-        return 1.35 + 0.45 * t
+        return 110 + (220 - 110) * t
+    }
+
+    /// How fast (points/second) the yeti can correct its x position toward
+    /// the skier. Deliberately capped below the skier's own dash speed
+    /// between lanes so a well-timed last-second dodge can actually work,
+    /// instead of the yeti tracking every move perfectly.
+    func yetiTurnSpeed(atDistance distance: Int) -> CGFloat {
+        let t = speedProgress(atDistance: distance)
+        return 140 + (230 - 140) * t
     }
 
     // MARK: - Levels (obstacle/yeti frequency)
@@ -79,8 +93,10 @@ struct DifficultyManager {
     }
 
     /// Max chase duration before the yeti gives up and retreats if it hasn't
-    /// caught the skier.
-    let yetiChaseTimeout: TimeInterval = 5.5
+    /// caught the skier. Set comfortably above the worst-case closing time so
+    /// this is a safety net, not the thing usually ending the chase — most
+    /// ambushes resolve by either catching the skier or scrolling past.
+    let yetiChaseTimeout: TimeInterval = 7.5
 
     /// How often (seconds) `GameScene` rolls the dice on starting a yeti ambush.
     let yetiCheckInterval: TimeInterval = 3.0
