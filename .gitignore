@@ -1,0 +1,18 @@
+# Xcode
+build/
+DerivedData/
+*.xcuserstate
+*.xcuserdatad/
+xcuserdata/
+*.xcscmblueprint
+*.xccheckout
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# macOS
+.DS_Store
+
+# XcodeGen (project.pbxproj is generated but committed for a ready-to-open repo;
+# regenerate anytime with `xcodegen generate` if project.yml changes)

@@ -1,0 +1,445 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		05FC7EA86DE28CB4642E7B34 /* HighScoreStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAC36302B3EFE6FB8A4BD391 /* HighScoreStore.swift */; };
+		0AF59D96A4FD267722C16F4A /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE0E6BE2B715587FE850C3B4 /* GameViewModel.swift */; };
+		14F64AF53AB75D756FBB97BF /* DifficultyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ADA52F4C1E4A5D4C74601EE /* DifficultyManager.swift */; };
+		169F1BA09E9AA0353160D144 /* GameContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59993584587C7845BAB3B25D /* GameContainerView.swift */; };
+		239DFBFA9BCEF8CD9D2DCB97 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D3A8E2406AA1CE3A3496B56 /* Assets.xcassets */; };
+		3041DA8C5B5AD4912F8D0E49 /* GameOverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C43F1DFCEC9C8CCF68A4DD3 /* GameOverView.swift */; };
+		35C35F005D9302218E3B4916 /* HapticsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 352F0BD10382947B6E637EDC /* HapticsManager.swift */; };
+		682EBEF8C323DBD7A676B57E /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6FA727E03974E033E8B1940 /* GameScene.swift */; };
+		8F12FE6E3E767137DC993A58 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BFE754FFDD9F49D0F39A56 /* RootView.swift */; };
+		91EEF94720DD6E92246F3C7A /* GameCenterManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10F8981358549F87D70A632 /* GameCenterManager.swift */; };
+		9AA8F335632A1C3E501B8896 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 051AE88814A615477D1E057C /* README.md */; };
+		9E208BD3A3980AC8050FB453 /* YetiSkiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6894268E7CDB5B93201B77 /* YetiSkiApp.swift */; };
+		A888A5771A66F1ED443AA330 /* PhysicsCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0683599C70BEC47B7EBB43 /* PhysicsCategory.swift */; };
+		C1AD6DDAB7E680FB19433E90 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F6DD26F963A10BC6D40186E /* MenuView.swift */; };
+		DB7CA174659FFCB6D196E150 /* HUDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31785C1B5564A00DDDBDF4B5 /* HUDView.swift */; };
+		E22C709A3E3B7C7D8844269D /* SoundManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C859B1E3C4344D0A9C0CE72 /* SoundManager.swift */; };
+		E66BB4356F8712DC3B9C58BD /* ObstacleNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52013736727DB33C2633D07 /* ObstacleNode.swift */; };
+		E8BF0FA6CFF28D39938D87EE /* SkierNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FB64CBC21F8AB15D167BB0E /* SkierNode.swift */; };
+		F5D0125A45C6B17710C541FF /* YetiNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 417BF4E1FA4161355DC4BE41 /* YetiNode.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		051AE88814A615477D1E057C /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		0F6DD26F963A10BC6D40186E /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
+		1C43F1DFCEC9C8CCF68A4DD3 /* GameOverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOverView.swift; sourceTree = "<group>"; };
+		2ADA52F4C1E4A5D4C74601EE /* DifficultyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DifficultyManager.swift; sourceTree = "<group>"; };
+		2D3A8E2406AA1CE3A3496B56 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		31785C1B5564A00DDDBDF4B5 /* HUDView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HUDView.swift; sourceTree = "<group>"; };
+		352F0BD10382947B6E637EDC /* HapticsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticsManager.swift; sourceTree = "<group>"; };
+		417BF4E1FA4161355DC4BE41 /* YetiNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YetiNode.swift; sourceTree = "<group>"; };
+		59993584587C7845BAB3B25D /* GameContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameContainerView.swift; sourceTree = "<group>"; };
+		5C6894268E7CDB5B93201B77 /* YetiSkiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YetiSkiApp.swift; sourceTree = "<group>"; };
+		859EE74B003D1F6CE0D8A37B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		8E0683599C70BEC47B7EBB43 /* PhysicsCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhysicsCategory.swift; sourceTree = "<group>"; };
+		9C859B1E3C4344D0A9C0CE72 /* SoundManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundManager.swift; sourceTree = "<group>"; };
+		9FB64CBC21F8AB15D167BB0E /* SkierNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkierNode.swift; sourceTree = "<group>"; };
+		A63DFCD0EB9B2879E8165B21 /* YetiSki.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = YetiSki.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B10F8981358549F87D70A632 /* GameCenterManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCenterManager.swift; sourceTree = "<group>"; };
+		B52013736727DB33C2633D07 /* ObstacleNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObstacleNode.swift; sourceTree = "<group>"; };
+		DAC36302B3EFE6FB8A4BD391 /* HighScoreStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighScoreStore.swift; sourceTree = "<group>"; };
+		E2BFE754FFDD9F49D0F39A56 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		E6FA727E03974E033E8B1940 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
+		FE0E6BE2B715587FE850C3B4 /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
+		FF4A6D0EF7D675719140280E /* YetiSki.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = YetiSki.entitlements; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		150DD1B71928497E5EE98B50 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A63DFCD0EB9B2879E8165B21 /* YetiSki.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		4EDFC968C1EF181F5518120F /* Persistence */ = {
+			isa = PBXGroup;
+			children = (
+				DAC36302B3EFE6FB8A4BD391 /* HighScoreStore.swift */,
+			);
+			path = Persistence;
+			sourceTree = "<group>";
+		};
+		5547E0C148B38B9CEA6C30A0 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				59993584587C7845BAB3B25D /* GameContainerView.swift */,
+				1C43F1DFCEC9C8CCF68A4DD3 /* GameOverView.swift */,
+				31785C1B5564A00DDDBDF4B5 /* HUDView.swift */,
+				0F6DD26F963A10BC6D40186E /* MenuView.swift */,
+				E2BFE754FFDD9F49D0F39A56 /* RootView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		6D6ABDC94952018A4BB2D030 /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				9C859B1E3C4344D0A9C0CE72 /* SoundManager.swift */,
+			);
+			path = Audio;
+			sourceTree = "<group>";
+		};
+		AC9DB21FE0423D89487AC502 /* Game */ = {
+			isa = PBXGroup;
+			children = (
+				2ADA52F4C1E4A5D4C74601EE /* DifficultyManager.swift */,
+				E6FA727E03974E033E8B1940 /* GameScene.swift */,
+				B52013736727DB33C2633D07 /* ObstacleNode.swift */,
+				8E0683599C70BEC47B7EBB43 /* PhysicsCategory.swift */,
+				9FB64CBC21F8AB15D167BB0E /* SkierNode.swift */,
+				417BF4E1FA4161355DC4BE41 /* YetiNode.swift */,
+			);
+			path = Game;
+			sourceTree = "<group>";
+		};
+		B46B82E83F1AA83F3773F625 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B6B58CC0E5723FB6D10AD228 /* Sounds */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		B6B58CC0E5723FB6D10AD228 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				051AE88814A615477D1E057C /* README.md */,
+			);
+			path = Sounds;
+			sourceTree = "<group>";
+		};
+		BD65AA3071FBD69D72A4473A /* YetiSki */ = {
+			isa = PBXGroup;
+			children = (
+				2D3A8E2406AA1CE3A3496B56 /* Assets.xcassets */,
+				FE0E6BE2B715587FE850C3B4 /* GameViewModel.swift */,
+				859EE74B003D1F6CE0D8A37B /* Info.plist */,
+				FF4A6D0EF7D675719140280E /* YetiSki.entitlements */,
+				5C6894268E7CDB5B93201B77 /* YetiSkiApp.swift */,
+				6D6ABDC94952018A4BB2D030 /* Audio */,
+				AC9DB21FE0423D89487AC502 /* Game */,
+				D6671283B586AE249FB79F0C /* GameCenter */,
+				E7EA594CCF4D8E3641F06832 /* Haptics */,
+				4EDFC968C1EF181F5518120F /* Persistence */,
+				B46B82E83F1AA83F3773F625 /* Resources */,
+				5547E0C148B38B9CEA6C30A0 /* Views */,
+			);
+			path = YetiSki;
+			sourceTree = "<group>";
+		};
+		CE475C20A65B990520B0C7C8 = {
+			isa = PBXGroup;
+			children = (
+				BD65AA3071FBD69D72A4473A /* YetiSki */,
+				150DD1B71928497E5EE98B50 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D6671283B586AE249FB79F0C /* GameCenter */ = {
+			isa = PBXGroup;
+			children = (
+				B10F8981358549F87D70A632 /* GameCenterManager.swift */,
+			);
+			path = GameCenter;
+			sourceTree = "<group>";
+		};
+		E7EA594CCF4D8E3641F06832 /* Haptics */ = {
+			isa = PBXGroup;
+			children = (
+				352F0BD10382947B6E637EDC /* HapticsManager.swift */,
+			);
+			path = Haptics;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		08A3AA305EE24BC9C20E8BAD /* YetiSki */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4D34F3E17D890B33C971549D /* Build configuration list for PBXNativeTarget "YetiSki" */;
+			buildPhases = (
+				A5FEB958BA7DA318D1C20381 /* Sources */,
+				A9CBFF7EEF1E2072FBED5CA1 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = YetiSki;
+			packageProductDependencies = (
+			);
+			productName = YetiSki;
+			productReference = A63DFCD0EB9B2879E8165B21 /* YetiSki.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		63345E2358C3F67E2F8BBD55 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					08A3AA305EE24BC9C20E8BAD = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = FC2F62D50F30996D8A9DCB62 /* Build configuration list for PBXProject "YetiSki" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = CE475C20A65B990520B0C7C8;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 150DD1B71928497E5EE98B50 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				08A3AA305EE24BC9C20E8BAD /* YetiSki */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A9CBFF7EEF1E2072FBED5CA1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				239DFBFA9BCEF8CD9D2DCB97 /* Assets.xcassets in Resources */,
+				9AA8F335632A1C3E501B8896 /* README.md in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A5FEB958BA7DA318D1C20381 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				14F64AF53AB75D756FBB97BF /* DifficultyManager.swift in Sources */,
+				91EEF94720DD6E92246F3C7A /* GameCenterManager.swift in Sources */,
+				169F1BA09E9AA0353160D144 /* GameContainerView.swift in Sources */,
+				3041DA8C5B5AD4912F8D0E49 /* GameOverView.swift in Sources */,
+				682EBEF8C323DBD7A676B57E /* GameScene.swift in Sources */,
+				0AF59D96A4FD267722C16F4A /* GameViewModel.swift in Sources */,
+				DB7CA174659FFCB6D196E150 /* HUDView.swift in Sources */,
+				35C35F005D9302218E3B4916 /* HapticsManager.swift in Sources */,
+				05FC7EA86DE28CB4642E7B34 /* HighScoreStore.swift in Sources */,
+				C1AD6DDAB7E680FB19433E90 /* MenuView.swift in Sources */,
+				E66BB4356F8712DC3B9C58BD /* ObstacleNode.swift in Sources */,
+				A888A5771A66F1ED443AA330 /* PhysicsCategory.swift in Sources */,
+				8F12FE6E3E767137DC993A58 /* RootView.swift in Sources */,
+				E8BF0FA6CFF28D39938D87EE /* SkierNode.swift in Sources */,
+				E22C709A3E3B7C7D8844269D /* SoundManager.swift in Sources */,
+				F5D0125A45C6B17710C541FF /* YetiNode.swift in Sources */,
+				9E208BD3A3980AC8050FB453 /* YetiSkiApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		13568DFCA4DE69A0D4B3B298 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		87F57176D4F7F3C4567A2015 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = YetiSki/YetiSki.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = YetiSki/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.lijulee.yetiski;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		945815E5D770CFD2CBAFFA10 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = YetiSki/YetiSki.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = YetiSki/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.lijulee.yetiski;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		E826468F7BB074F89D038646 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4D34F3E17D890B33C971549D /* Build configuration list for PBXNativeTarget "YetiSki" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				945815E5D770CFD2CBAFFA10 /* Debug */,
+				87F57176D4F7F3C4567A2015 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		FC2F62D50F30996D8A9DCB62 /* Build configuration list for PBXProject "YetiSki" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E826468F7BB074F89D038646 /* Debug */,
+				13568DFCA4DE69A0D4B3B298 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 63345E2358C3F67E2F8BBD55 /* Project object */;
+}
