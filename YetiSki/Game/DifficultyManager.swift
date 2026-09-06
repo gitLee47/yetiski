@@ -25,6 +25,21 @@ struct DifficultyManager {
         return baseScrollSpeed + (maxScrollSpeed - baseScrollSpeed) * t
     }
 
+    /// Extra scroll speed (points/second) awarded per level survived — a
+    /// small, noticeable bump each time you level up, on top of the smooth
+    /// distance-based ramp above. Capped at `maxLevel`, like the other
+    /// level-driven curves, so it doesn't grow unbounded on a very long run.
+    func levelSpeedBonus(atLevel level: Int) -> CGFloat {
+        let cappedLevel = min(level, maxLevel)
+        return CGFloat(cappedLevel - 1) * 6
+    }
+
+    /// Total forward scroll speed — the continuous distance-based ramp plus
+    /// the per-level bonus — the actual speed the world/skier moves at.
+    func totalScrollSpeed(atDistance distance: Int, level: Int) -> CGFloat {
+        scrollSpeed(atDistance: distance) + levelSpeedBonus(atLevel: level)
+    }
+
     /// Extra speed (points/second) the yeti moves *above* the world scroll
     /// speed while sprinting — this is what closes the gap toward the skier.
     /// Kept as a flat add-on rather than a multiplier on scroll speed, so it

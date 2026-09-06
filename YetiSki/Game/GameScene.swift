@@ -160,14 +160,14 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         let dt = min(lastUpdateTime.map { currentTime - $0 } ?? 0, 1.0 / 30.0)
         guard dt > 0 else { return }
 
-        let speed = difficulty.scrollSpeed(atDistance: currentScore)
-        let travel = speed * CGFloat(dt)
-        distancePoints += travel
-        viewModel?.updateDistance(currentScore)
-
         elapsedTime += dt
         currentLevel = difficulty.level(atTime: elapsedTime)
         viewModel?.updateLevel(currentLevel)
+
+        let speed = difficulty.totalScrollSpeed(atDistance: currentScore, level: currentLevel)
+        let travel = speed * CGFloat(dt)
+        distancePoints += travel
+        viewModel?.updateDistance(currentScore)
 
         scrollBackground(by: travel)
         advanceObstacles(travel: travel, dt: dt)
@@ -219,7 +219,7 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         }
 
         yetiChaseElapsed += dt
-        let speed = difficulty.scrollSpeed(atDistance: currentScore)
+        let speed = difficulty.totalScrollSpeed(atDistance: currentScore, level: currentLevel)
             + difficulty.yetiClosingSpeed(atDistance: currentScore)
         yeti.position.y += speed * CGFloat(dt)
         yeti.stepHoming(towardX: skier.position.x, deltaTime: dt)
