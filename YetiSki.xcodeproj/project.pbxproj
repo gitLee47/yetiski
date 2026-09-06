@@ -19,6 +19,7 @@
 		91EEF94720DD6E92246F3C7A /* GameCenterManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10F8981358549F87D70A632 /* GameCenterManager.swift */; };
 		9AA8F335632A1C3E501B8896 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 051AE88814A615477D1E057C /* README.md */; };
 		9E208BD3A3980AC8050FB453 /* YetiSkiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6894268E7CDB5B93201B77 /* YetiSkiApp.swift */; };
+		A2A5BD78399C7126B6C6460D /* PauseOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B348400C6762D8773CB9CC /* PauseOverlayView.swift */; };
 		A888A5771A66F1ED443AA330 /* PhysicsCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0683599C70BEC47B7EBB43 /* PhysicsCategory.swift */; };
 		C1AD6DDAB7E680FB19433E90 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F6DD26F963A10BC6D40186E /* MenuView.swift */; };
 		DB7CA174659FFCB6D196E150 /* HUDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31785C1B5564A00DDDBDF4B5 /* HUDView.swift */; };
@@ -29,6 +30,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		03B348400C6762D8773CB9CC /* PauseOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PauseOverlayView.swift; sourceTree = "<group>"; };
 		051AE88814A615477D1E057C /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		0F6DD26F963A10BC6D40186E /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		1C43F1DFCEC9C8CCF68A4DD3 /* GameOverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOverView.swift; sourceTree = "<group>"; };
@@ -77,6 +79,7 @@
 				1C43F1DFCEC9C8CCF68A4DD3 /* GameOverView.swift */,
 				31785C1B5564A00DDDBDF4B5 /* HUDView.swift */,
 				0F6DD26F963A10BC6D40186E /* MenuView.swift */,
+				03B348400C6762D8773CB9CC /* PauseOverlayView.swift */,
 				E2BFE754FFDD9F49D0F39A56 /* RootView.swift */,
 			);
 			path = Views;
@@ -245,6 +248,7 @@
 				05FC7EA86DE28CB4642E7B34 /* HighScoreStore.swift in Sources */,
 				C1AD6DDAB7E680FB19433E90 /* MenuView.swift in Sources */,
 				E66BB4356F8712DC3B9C58BD /* ObstacleNode.swift in Sources */,
+				A2A5BD78399C7126B6C6460D /* PauseOverlayView.swift in Sources */,
 				A888A5771A66F1ED443AA330 /* PhysicsCategory.swift in Sources */,
 				8F12FE6E3E767137DC993A58 /* RootView.swift in Sources */,
 				E8BF0FA6CFF28D39938D87EE /* SkierNode.swift in Sources */,

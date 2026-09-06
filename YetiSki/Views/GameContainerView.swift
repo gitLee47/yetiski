@@ -19,10 +19,11 @@ struct GameContainerView: View {
                     .ignoresSafeArea()
 
                 HUDView()
-                    .allowsHitTesting(false)
 
                 if viewModel.appState == .gameOver {
                     GameOverView()
+                } else if viewModel.isPaused {
+                    PauseOverlayView()
                 }
             }
             .onAppear {
@@ -33,10 +34,13 @@ struct GameContainerView: View {
             .onChange(of: proxy.size) { _, newSize in
                 scene.size = newSize
             }
-            .onChange(of: viewModel.appState) { _, newState in
-                if newState == .playing {
-                    scene.startRun()
-                }
+            .onChange(of: viewModel.runID) { _, _ in
+                // Fires for both a fresh game from the menu and a mid-run
+                // restart — appState alone wouldn't change in the latter case.
+                scene.startRun()
+            }
+            .onChange(of: viewModel.isPaused) { _, paused in
+                paused ? scene.pauseRun() : scene.resumeRun()
             }
         }
         .ignoresSafeArea()

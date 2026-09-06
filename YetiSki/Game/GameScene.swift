@@ -74,6 +74,7 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
     /// Resets all run state and starts (or restarts) gameplay.
     func startRun() {
         setUpSceneIfNeeded()
+        isPaused = false
 
         obstacles.forEach { $0.removeFromParent() }
         obstacles.removeAll()
@@ -101,6 +102,20 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
     func stopRun() {
         isPlaying = false
         SoundManager.shared.stopBackgroundMusic()
+    }
+
+    /// Freezes the simulation (actions, physics, `update(_:)`) and steering
+    /// input in place. Uses `SKScene`'s own `isPaused`, which SpriteKit
+    /// already respects for the update loop — we just also need to guard
+    /// `touchesBegan` ourselves, since raw touch delivery isn't affected by it.
+    func pauseRun() {
+        isPaused = true
+        SoundManager.shared.pauseBackgroundMusic()
+    }
+
+    func resumeRun() {
+        isPaused = false
+        SoundManager.shared.resumeBackgroundMusic()
     }
 
     // MARK: - Background
@@ -131,7 +146,7 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
     // MARK: - Steering
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard isPlaying, let touch = touches.first else { return }
+        guard isPlaying, !isPaused, let touch = touches.first else { return }
         let x = touch.location(in: self).x
         if x < 0 {
             steer(by: -1)

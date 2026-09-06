@@ -30,6 +30,16 @@ final class SoundManager {
         musicPlayer = nil
     }
 
+    /// Pauses the music in place (e.g. while the game is paused), unlike
+    /// `stopBackgroundMusic()` which discards the player entirely.
+    func pauseBackgroundMusic() {
+        musicPlayer?.pause()
+    }
+
+    func resumeBackgroundMusic() {
+        musicPlayer?.play()
+    }
+
     func playSwoosh() { play("swoosh") }
     func playHit() { play("crash") }
     func playYetiRoar() { play("yeti_roar") }

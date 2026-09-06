@@ -18,6 +18,14 @@ final class GameViewModel: ObservableObject {
     @Published var highScore: Int = 0
     @Published var wasCaughtByYeti: Bool = false
     @Published var level: Int = 1
+    /// Bumped every time a run (re)starts, whether from the menu or the
+    /// in-game restart button. `GameContainerView` observes this — rather
+    /// than `appState`, which doesn't change on a mid-run restart — to know
+    /// when to tell the scene to reset and start over.
+    @Published var runID: Int = 0
+    /// Whether gameplay is currently paused. `GameContainerView` observes
+    /// this to pause/resume the `GameScene`.
+    @Published var isPaused: Bool = false
 
     private let highScoreStore = HighScoreStore()
 
@@ -25,13 +33,26 @@ final class GameViewModel: ObservableObject {
         highScore = highScoreStore.bestDistance
     }
 
-    /// Resets run-specific state and switches to the playing screen.
+    /// Resets run-specific state and (re)starts gameplay — used both for a
+    /// fresh game from the menu and for restarting mid-run.
     func startNewGame() {
         distance = 0
         lives = GameConstants.startingLives
         wasCaughtByYeti = false
         level = 1
+        isPaused = false
         appState = .playing
+        runID += 1
+    }
+
+    /// Pauses the current run. No-op unless a run is actually in progress.
+    func pause() {
+        guard appState == .playing else { return }
+        isPaused = true
+    }
+
+    func resume() {
+        isPaused = false
     }
 
     /// Called by `GameScene` every time distance updates.
@@ -82,6 +103,7 @@ final class GameViewModel: ObservableObject {
 
     func returnToMenu() {
         appState = .menu
+        isPaused = false
     }
 }
 

@@ -1,7 +1,8 @@
 import SwiftUI
 
-/// Score + lives overlay shown during gameplay. Non-interactive (taps pass
-/// through to the SpriteKit scene for steering).
+/// Score + lives overlay shown during gameplay. Mostly non-interactive (taps
+/// pass through to the SpriteKit scene for steering) — only the restart
+/// button below opts back into hit-testing.
 struct HUDView: View {
     @EnvironmentObject var viewModel: GameViewModel
     @State private var showLevelBanner = false
@@ -24,17 +25,32 @@ struct HUDView: View {
                     }
                     .padding(10)
                     .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
+                    .allowsHitTesting(false)
 
                     Spacer()
 
-                    HStack(spacing: 4) {
-                        ForEach(0..<GameConstants.startingLives, id: \.self) { index in
-                            Image(systemName: "figure.skiing.downhill")
-                                .foregroundStyle(index < viewModel.lives ? .blue : .gray.opacity(0.3))
+                    VStack(alignment: .trailing, spacing: 8) {
+                        HStack(spacing: 4) {
+                            ForEach(0..<GameConstants.startingLives, id: \.self) { index in
+                                Image(systemName: "figure.skiing.downhill")
+                                    .foregroundStyle(index < viewModel.lives ? .blue : .gray.opacity(0.3))
+                            }
+                        }
+                        .padding(10)
+                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
+                        .allowsHitTesting(false)
+
+                        if viewModel.appState == .playing && !viewModel.isPaused {
+                            HStack(spacing: 8) {
+                                HUDIconButton(systemName: "pause.fill", accessibilityLabel: "Pause") {
+                                    viewModel.pause()
+                                }
+                                HUDIconButton(systemName: "arrow.counterclockwise", accessibilityLabel: "Restart") {
+                                    viewModel.startNewGame()
+                                }
+                            }
                         }
                     }
-                    .padding(10)
-                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
                 }
                 .padding()
 
@@ -44,6 +60,7 @@ struct HUDView: View {
             if showLevelBanner {
                 LevelUpBanner(level: viewModel.level)
                     .transition(.scale(scale: 0.7).combined(with: .opacity))
+                    .allowsHitTesting(false)
             }
         }
         .onChange(of: viewModel.level) { _, newLevel in
@@ -58,6 +75,24 @@ struct HUDView: View {
                 }
             }
         }
+    }
+}
+
+/// Small circular icon button used for the in-HUD pause/restart controls.
+private struct HUDIconButton: View {
+    let systemName: String
+    let accessibilityLabel: String
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: systemName)
+                .font(.system(size: 14, weight: .bold))
+                .foregroundStyle(.white)
+                .frame(width: 34, height: 34)
+                .background(.black.opacity(0.35), in: Circle())
+        }
+        .accessibilityLabel(accessibilityLabel)
     }
 }
 
