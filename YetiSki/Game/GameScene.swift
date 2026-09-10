@@ -1,7 +1,8 @@
 import SpriteKit
 
-/// Core gameplay scene: scrolls the slope, spawns obstacles and yeti ambushes,
-/// handles left/right tap steering, and reports events back to `GameViewModel`.
+/// Core gameplay scene: scrolls the slope, spawns obstacles, ramps, and yeti
+/// ambushes, handles left/right tap steering, and reports events back to
+/// `GameViewModel`.
 final class GameScene: SKScene, SKPhysicsContactDelegate {
     weak var viewModel: GameViewModel?
 
@@ -15,6 +16,8 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
     private let snowLineSpacing: CGFloat = 90
 
     private var obstacles: [ObstacleNode] = []
+    private var ramps: [RampNode] = []
+    private var rampSpawnTimer: TimeInterval = 0
     private var activeYeti: YetiNode?
     private var yetiChaseElapsed: TimeInterval = 0
     private var yetiCheckTimer: TimeInterval = 0
@@ -78,6 +81,8 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
 
         obstacles.forEach { $0.removeFromParent() }
         obstacles.removeAll()
+        ramps.forEach { $0.removeFromParent() }
+        ramps.removeAll()
         activeYeti?.removeFromParent()
         activeYeti = nil
 
@@ -90,6 +95,7 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         skier.zRotation = 0
 
         obstacleSpawnTimer = difficulty.obstacleSpawnInterval(atLevel: currentLevel)
+        rampSpawnTimer = difficulty.rampSpawnInterval(atLevel: currentLevel)
         yetiCheckTimer = difficulty.yetiCheckInterval
         yetiChaseElapsed = 0
         timeSinceLastYeti = 0
@@ -186,6 +192,7 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
 
         scrollBackground(by: travel)
         advanceObstacles(travel: travel, dt: dt)
+        advanceRamps(travel: travel, dt: dt)
         advanceYeti(dt: dt)
     }
 
@@ -215,6 +222,33 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         obstacle.zPosition = 5
         addChild(obstacle)
         obstacles.append(obstacle)
+    }
+
+    // MARK: - Ramps
+
+    private func advanceRamps(travel: CGFloat, dt: TimeInterval) {
+        rampSpawnTimer -= dt
+        if rampSpawnTimer <= 0 {
+            spawnRamp()
+            rampSpawnTimer = difficulty.rampSpawnInterval(atLevel: currentLevel)
+        }
+
+        let despawnY = size.height / 2 + 60
+        for ramp in ramps {
+            ramp.position.y += travel
+        }
+        let (remaining, despawned) = ramps.partitioned { $0.position.y > despawnY }
+        despawned.forEach { $0.removeFromParent() }
+        ramps = remaining
+    }
+
+    private func spawnRamp() {
+        let lane = Int.random(in: 0..<laneCount)
+        let ramp = RampNode()
+        ramp.position = CGPoint(x: laneCenterX(lane), y: -size.height / 2 - 40)
+        ramp.zPosition = 4
+        addChild(ramp)
+        ramps.append(ramp)
     }
 
     // MARK: - Yeti
@@ -265,8 +299,16 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
     // MARK: - Collisions
 
     func didBegin(_ contact: SKPhysicsContact) {
-        guard isPlaying, !skier.isInvincible else { return }
+        guard isPlaying else { return }
         let categories = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
+
+        // Ramps always register, even mid-invincibility (e.g. chaining a
+        // second jump) — only obstacle/yeti damage respects invincibility.
+        if categories & PhysicsCategory.ramp != 0 {
+            handleRampContact(contact)
+            return
+        }
+        guard !skier.isInvincible else { return }
 
         if categories & PhysicsCategory.yeti != 0 {
             despawnYeti()
@@ -292,6 +334,23 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
             if let obstacle = node as? ObstacleNode {
                 obstacle.removeFromParent()
                 obstacles.removeAll { $0 === obstacle }
+            }
+        }
+    }
+
+    private func handleRampContact(_ contact: SKPhysicsContact) {
+        removeRamp(from: contact)
+        distancePoints += difficulty.rampJumpDistanceBonus
+        skier.playJump(duration: difficulty.rampJumpDuration)
+        SoundManager.shared.playJump()
+        HapticsManager.shared.jump()
+    }
+
+    private func removeRamp(from contact: SKPhysicsContact) {
+        for node in [contact.bodyA.node, contact.bodyB.node] {
+            if let ramp = node as? RampNode {
+                ramp.removeFromParent()
+                ramps.removeAll { $0 === ramp }
             }
         }
     }

@@ -7,6 +7,7 @@ Drop these files here to enable audio (see `Audio/SoundManager.swift`):
 - `yeti_roar.*` — yeti ambush starts
 - `game_over.*` — run ends
 - `level_up.*` — difficulty level advances
+- `jump.*` — skier launches off a ramp
 - `music_loop.*` — looping background music
 
 Until these exist, `SoundManager` no-ops safely — the game runs silently.

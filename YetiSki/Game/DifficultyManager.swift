@@ -115,4 +115,25 @@ struct DifficultyManager {
 
     /// How often (seconds) `GameScene` rolls the dice on starting a yeti ambush.
     let yetiCheckInterval: TimeInterval = 3.0
+
+    // MARK: - Ramps
+
+    /// Seconds between ramp spawns. Kept on its own, much slower cadence than
+    /// obstacles — a ramp is an escape tool, not just another obstacle
+    /// flavor — and gets slightly *more* frequent at higher levels so there
+    /// are more escape opportunities to offset the rising difficulty.
+    func rampSpawnInterval(atLevel level: Int) -> TimeInterval {
+        let t = Double(levelProgress(level))
+        let base: TimeInterval = 8.0
+        let floor: TimeInterval = 5.5
+        return base - (base - floor) * t
+    }
+
+    /// How long a ramp jump's invincibility (and hop animation) lasts — long
+    /// enough to clear an obstacle or duck past an active yeti.
+    let rampJumpDuration: TimeInterval = 1.3
+
+    /// Flat distance bonus awarded the instant a ramp is used, representing
+    /// ground covered while airborne.
+    let rampJumpDistanceBonus: CGFloat = 220
 }

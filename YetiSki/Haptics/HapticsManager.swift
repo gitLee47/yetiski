@@ -6,6 +6,7 @@ final class HapticsManager {
 
     private let notification = UINotificationFeedbackGenerator()
     private let impact = UIImpactFeedbackGenerator(style: .light)
+    private let mediumImpact = UIImpactFeedbackGenerator(style: .medium)
 
     private init() {}
 
@@ -27,5 +28,10 @@ final class HapticsManager {
     /// Positive buzz when the difficulty level advances.
     func levelUp() {
         notification.notificationOccurred(.success)
+    }
+
+    /// A more noticeable thump when the skier launches off a ramp.
+    func jump() {
+        mediumImpact.impactOccurred()
     }
 }

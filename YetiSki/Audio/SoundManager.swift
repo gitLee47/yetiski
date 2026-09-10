@@ -45,6 +45,7 @@ final class SoundManager {
     func playYetiRoar() { play("yeti_roar") }
     func playGameOver() { play("game_over") }
     func playLevelUp() { play("level_up") }
+    func playJump() { play("jump") }
 
     private func play(_ name: String) {
         guard let url = resourceURL(named: name) else { return }

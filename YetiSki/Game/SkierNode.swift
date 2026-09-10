@@ -1,7 +1,7 @@
 import SpriteKit
 
 /// The player's skier, drawn as simple programmatic shapes (no image assets).
-/// Exposes discrete lane-shift steering and a hit-flash/invincibility helper.
+/// Exposes discrete lane-shift steering and hit-flash/jump invincibility helpers.
 final class SkierNode: SKNode {
     static let width: CGFloat = 34
     static let height: CGFloat = 46
@@ -70,7 +70,7 @@ final class SkierNode: SKNode {
         body.affectedByGravity = false
         body.allowsRotation = false
         body.categoryBitMask = PhysicsCategory.skier
-        body.contactTestBitMask = PhysicsCategory.obstacle | PhysicsCategory.yeti
+        body.contactTestBitMask = PhysicsCategory.obstacle | PhysicsCategory.yeti | PhysicsCategory.ramp
         body.collisionBitMask = PhysicsCategory.none
         physicsBody = body
     }
@@ -100,5 +100,30 @@ final class SkierNode: SKNode {
         bodyContainer.run(.repeat(blink, count: max(1, blinkCount))) { [weak self] in
             self?.isInvincible = false
         }
+    }
+
+    /// Launches off a ramp: a hop-and-spin flourish, with invincibility to
+    /// obstacles/the yeti for the duration so the jump can actually be used
+    /// to clear them. Animates `bodyContainer` only (not `self`), so it never
+    /// fights with `moveTo(x:)`'s lane-steering action on the node itself.
+    func playJump(duration: TimeInterval) {
+        isInvincible = true
+        bodyContainer.removeAction(forKey: "jump")
+
+        let riseHeight: CGFloat = 20
+        let up = SKAction.moveBy(x: 0, y: riseHeight, duration: duration * 0.3)
+        up.timingMode = .easeOut
+        let down = SKAction.moveBy(x: 0, y: -riseHeight, duration: duration * 0.3)
+        down.timingMode = .easeIn
+        let hop = SKAction.sequence([up, .wait(forDuration: duration * 0.4), down])
+
+        let scaleUp = SKAction.scale(to: 1.3, duration: duration * 0.3)
+        let scaleDown = SKAction.scale(to: 1.0, duration: duration * 0.3)
+        let scaleSeq = SKAction.sequence([scaleUp, .wait(forDuration: duration * 0.4), scaleDown])
+
+        let spin = SKAction.rotate(byAngle: .pi * 2, duration: duration)
+
+        let finish = SKAction.run { [weak self] in self?.isInvincible = false }
+        bodyContainer.run(.sequence([.group([hop, scaleSeq, spin]), finish]), withKey: "jump")
     }
 }
