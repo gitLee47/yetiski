@@ -2,6 +2,7 @@ import SwiftUI
 
 struct MenuView: View {
     @EnvironmentObject var viewModel: GameViewModel
+    @State private var showShop = false
 
     var body: some View {
         ZStack {
@@ -34,10 +35,15 @@ struct MenuView: View {
                         .foregroundStyle(.orange)
                 }
 
-                if viewModel.reviveTokens > 0 {
-                    Label("\(viewModel.reviveTokens) Revive Token\(viewModel.reviveTokens == 1 ? "" : "s")", systemImage: "ticket.fill")
+                HStack(spacing: 16) {
+                    if viewModel.reviveTokens > 0 {
+                        Label("\(viewModel.reviveTokens)", systemImage: "ticket.fill")
+                            .font(.subheadline.bold())
+                            .foregroundStyle(.green)
+                    }
+                    Label("\(viewModel.snowCoins)", systemImage: "snowflake")
                         .font(.subheadline.bold())
-                        .foregroundStyle(.green)
+                        .foregroundStyle(.cyan)
                 }
 
                 Spacer()
@@ -53,6 +59,13 @@ struct MenuView: View {
                 .buttonStyle(.borderedProminent)
                 .tint(.blue)
                 .padding(.horizontal, 40)
+
+                Button {
+                    showShop = true
+                } label: {
+                    Label("Locker", systemImage: "tshirt.fill")
+                }
+                .padding(.bottom, 8)
 
                 if GameCenterManager.shared.isAuthenticated {
                     Button {
@@ -70,6 +83,10 @@ struct MenuView: View {
                     .padding(.horizontal, 40)
 
                 Spacer(minLength: 40)
+            }
+
+            if showShop {
+                SkinShopView(onClose: { showShop = false })
             }
 
             if viewModel.showDailyReward {

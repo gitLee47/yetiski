@@ -52,6 +52,12 @@ final class GameViewModel: ObservableObject {
     /// reset distance/level).
     @Published var continueRunID: Int = 0
 
+    /// Persistent cosmetic currency, earned from snowflake pickups. Spent in
+    /// the Locker to unlock skier skins — purely visual, no gameplay effect.
+    @Published var snowCoins: Int = 0
+    @Published var selectedSkin: SkierSkin = .classic
+    @Published var unlockedSkins: Set<SkierSkin> = [.classic]
+
     private var hasUsedContinueThisRun = false
     private var pendingCaughtByYeti = false
 
@@ -62,12 +68,44 @@ final class GameViewModel: ObservableObject {
         highScore = highScoreStore.bestDistance
         reviveTokens = progressStore.reviveTokens
         dailyStreak = progressStore.dailyStreak
+        snowCoins = progressStore.snowCoins
+        selectedSkin = progressStore.selectedSkin
+        unlockedSkins = progressStore.unlockedSkins
         if progressStore.isDailyRewardAvailable {
             let info = progressStore.pendingRewardInfo()
             pendingDailyRewardDay = info.day
             pendingDailyRewardTokens = info.tokens
             showDailyReward = true
         }
+    }
+
+    /// Called by `GameScene` when the skier grabs a snowflake — banks 1 Snow
+    /// Coin on top of the in-run distance bonus, feeding the cosmetic shop.
+    func addSnowCoins(_ amount: Int) {
+        snowCoins += amount
+        progressStore.snowCoins = snowCoins
+    }
+
+    /// Spends Snow Coins to unlock a skin, then equips it. No-op if already
+    /// unlocked or unaffordable.
+    @discardableResult
+    func purchaseSkin(_ skin: SkierSkin) -> Bool {
+        guard !unlockedSkins.contains(skin), snowCoins >= skin.cost else { return false }
+        snowCoins -= skin.cost
+        unlockedSkins.insert(skin)
+        progressStore.snowCoins = snowCoins
+        progressStore.unlockedSkins = unlockedSkins
+        HapticsManager.shared.powerup()
+        SoundManager.shared.playPowerup()
+        selectSkin(skin)
+        return true
+    }
+
+    /// Equips an already-unlocked skin.
+    func selectSkin(_ skin: SkierSkin) {
+        guard unlockedSkins.contains(skin) else { return }
+        selectedSkin = skin
+        progressStore.selectedSkin = skin
     }
 
     /// Claims today's login reward, banking its tokens and advancing the streak.

@@ -89,6 +89,7 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
 
         skier = SkierNode()
         skier.zPosition = 10
+        skier.applySkin(viewModel?.selectedSkin ?? .classic)
         addChild(skier)
     }
 
@@ -97,6 +98,9 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
     /// Resets all run state and starts (or restarts) gameplay.
     func startRun() {
         setUpSceneIfNeeded()
+        // Re-apply in case the skin changed (via the Locker) since this
+        // scene's skier was first built — it's reused across runs.
+        skier.applySkin(viewModel?.selectedSkin ?? .classic)
         isPaused = false
 
         obstacles.forEach { $0.removeFromParent() }
@@ -646,6 +650,7 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
             HapticsManager.shared.powerup()
         case .snowflake:
             distancePoints += difficulty.snowflakeDistanceBonus
+            viewModel?.addSnowCoins(1)
             showFloatingText(
                 "+\(Int(difficulty.snowflakeDistanceBonus / 10))m",
                 color: SKColor(red: 0.25, green: 0.55, blue: 0.85, alpha: 1),

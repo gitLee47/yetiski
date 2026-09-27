@@ -11,6 +11,11 @@ final class SkierNode: SKNode {
     private let shieldBubble = SKShapeNode(circleOfRadius: SkierNode.width * 0.85)
     private let slipIndicator = SKShapeNode(circleOfRadius: SkierNode.width * 0.8)
 
+    // Cosmetic parts — recolored by `applySkin(_:)`.
+    private let torso = SKShapeNode(rectOf: CGSize(width: 20, height: 20), cornerRadius: 6)
+    private let head = SKShapeNode(circleOfRadius: 8)
+    private var skiNodes: [SKShapeNode] = []
+
     override init() {
         super.init()
         buildVisuals()
@@ -50,6 +55,7 @@ final class SkierNode: SKNode {
             ski.strokeColor = .clear
             ski.position = CGPoint(x: offset, y: -Self.height / 2 + 4)
             bodyContainer.addChild(ski)
+            skiNodes.append(ski)
         }
 
         // Legs
@@ -60,14 +66,12 @@ final class SkierNode: SKNode {
         bodyContainer.addChild(legs)
 
         // Torso
-        let torso = SKShapeNode(rectOf: CGSize(width: 20, height: 20), cornerRadius: 6)
         torso.fillColor = .systemBlue
         torso.strokeColor = .clear
         torso.position = CGPoint(x: 0, y: -2)
         bodyContainer.addChild(torso)
 
         // Head
-        let head = SKShapeNode(circleOfRadius: 8)
         head.fillColor = .systemOrange
         head.strokeColor = .clear
         head.position = CGPoint(x: 0, y: Self.height / 2 - 10)
@@ -176,5 +180,15 @@ final class SkierNode: SKNode {
     func setSlipping(_ slipping: Bool) {
         slipIndicator.removeAllActions()
         slipIndicator.run(.fadeAlpha(to: slipping ? 1.0 : 0, duration: 0.2))
+    }
+
+    /// Recolors the skier to match a cosmetic skin. Purely visual — no
+    /// gameplay effect. Safe to call anytime, including on an already-built
+    /// skier reused across runs (skins can change between runs via the Locker).
+    func applySkin(_ skin: SkierSkin) {
+        // SKColor is UIColor on iOS, so these assign directly.
+        torso.fillColor = skin.jacketColor
+        head.fillColor = skin.headColor
+        skiNodes.forEach { $0.fillColor = skin.skiColor }
     }
 }

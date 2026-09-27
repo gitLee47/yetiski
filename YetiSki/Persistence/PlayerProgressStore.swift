@@ -8,9 +8,40 @@ final class PlayerProgressStore {
     private let reviveTokensKey = "com.lijulee.yetiski.reviveTokens"
     private let dailyStreakKey = "com.lijulee.yetiski.dailyStreak"
     private let lastClaimDateKey = "com.lijulee.yetiski.lastClaimDate"
+    private let snowCoinsKey = "com.lijulee.yetiski.snowCoins"
+    private let unlockedSkinsKey = "com.lijulee.yetiski.unlockedSkins"
+    private let selectedSkinKey = "com.lijulee.yetiski.selectedSkin"
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
+    }
+
+    /// Persistent cosmetic currency, earned from snowflake pickups (separate
+    /// from revive tokens, which are functional rather than cosmetic).
+    var snowCoins: Int {
+        get { defaults.integer(forKey: snowCoinsKey) }
+        set { defaults.set(newValue, forKey: snowCoinsKey) }
+    }
+
+    /// Always includes `.classic` even before anything's been explicitly
+    /// unlocked, since it's the free starting skin.
+    var unlockedSkins: Set<SkierSkin> {
+        get {
+            let rawValues = defaults.stringArray(forKey: unlockedSkinsKey) ?? []
+            let skins = Set(rawValues.compactMap(SkierSkin.init(rawValue:)))
+            return skins.isEmpty ? [.classic] : skins
+        }
+        set { defaults.set(Array(newValue).map(\.rawValue), forKey: unlockedSkinsKey) }
+    }
+
+    var selectedSkin: SkierSkin {
+        get {
+            guard let raw = defaults.string(forKey: selectedSkinKey), let skin = SkierSkin(rawValue: raw) else {
+                return .classic
+            }
+            return skin
+        }
+        set { defaults.set(newValue.rawValue, forKey: selectedSkinKey) }
     }
 
     var reviveTokens: Int {
