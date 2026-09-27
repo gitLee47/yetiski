@@ -15,6 +15,11 @@ final class YetiNode: SKNode {
     /// per-instance (rather than a single scalar in `GameScene`) so multiple
     /// yetis can be active with independent timeouts.
     var chaseElapsed: TimeInterval = 0
+    /// True for a Yeti War horde member that actively homes toward the
+    /// skier's lane (via `stepHoming`) rather than walking straight up its
+    /// spawn lane. Set by `GameScene.advanceYetiWarSpawning`; a normal
+    /// single/dual ambush yeti always homes regardless of this flag.
+    var chasesSkier = false
 
     private let sprite = SKSpriteNode(texture: SpriteTextureLoader.texture(named: "sprite_yeti_1"))
 
@@ -46,7 +51,10 @@ final class YetiNode: SKNode {
         physicsBody.affectedByGravity = false
         physicsBody.allowsRotation = false
         physicsBody.categoryBitMask = PhysicsCategory.yeti
-        physicsBody.contactTestBitMask = PhysicsCategory.skier
+        // Includes `.bullet` so a Yeti War horde member (a plain YetiNode)
+        // reports contact with a BulletNode, mirroring every other pair in
+        // this game declaring the relationship on both sides.
+        physicsBody.contactTestBitMask = PhysicsCategory.skier | PhysicsCategory.bullet
         physicsBody.collisionBitMask = PhysicsCategory.none
         self.physicsBody = physicsBody
     }

@@ -24,6 +24,8 @@ struct GameContainerView: View {
                     GameOverView()
                 } else if viewModel.isOfferingContinue {
                     ContinueOfferView()
+                } else if viewModel.isYetiWarBannerShown {
+                    YetiWarWeaponSelectView()
                 } else if viewModel.isPaused {
                     PauseOverlayView()
                 }
@@ -43,6 +45,9 @@ struct GameContainerView: View {
             }
             .onChange(of: viewModel.continueRunID) { _, _ in
                 scene.continueRun()
+            }
+            .onChange(of: viewModel.yetiWarStartID) { _, _ in
+                scene.beginYetiWar(weapon: viewModel.selectedWeapon)
             }
             .onChange(of: viewModel.isPaused) { _, paused in
                 paused ? scene.pauseRun() : scene.resumeRun()

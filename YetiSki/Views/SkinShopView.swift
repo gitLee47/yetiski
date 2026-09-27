@@ -1,10 +1,12 @@
 import SwiftUI
 
-/// The cosmetic shop ("Locker") — spend Snow Coins (earned from snowflake
-/// pickups) to unlock and equip skier skins. Purely cosmetic, no gameplay
-/// effect, which keeps the leaderboard fair while still giving players
-/// something to grind toward — the same model Subway Surfers/Temple Run use
-/// for their character shops.
+/// The Locker — spend Snow Coins (earned from snowflake pickups) to unlock
+/// and equip skier skins ("Outfits") and Yeti War weapons ("Weapons").
+/// Outfits are purely cosmetic, no gameplay effect, which keeps the
+/// leaderboard fair while still giving players something to grind toward —
+/// the same model Subway Surfers/Temple Run use for their character shops.
+/// Weapons DO have a gameplay effect (during a Yeti War), but share the same
+/// unlock-with-coins mechanic, plus an optional free level-based path.
 struct SkinShopView: View {
     @EnvironmentObject var viewModel: GameViewModel
     let onClose: () -> Void
@@ -34,9 +36,20 @@ struct SkinShopView: View {
                 .padding(.top, 24)
 
                 ScrollView {
-                    LazyVGrid(columns: columns, spacing: 14) {
-                        ForEach(SkierSkin.allCases) { skin in
-                            SkinCard(skin: skin)
+                    VStack(alignment: .leading, spacing: 12) {
+                        SectionHeader(title: "Outfits")
+                        LazyVGrid(columns: columns, spacing: 14) {
+                            ForEach(SkierSkin.allCases) { skin in
+                                SkinCard(skin: skin)
+                            }
+                        }
+
+                        SectionHeader(title: "Weapons")
+                            .padding(.top, 8)
+                        LazyVGrid(columns: columns, spacing: 14) {
+                            ForEach(WeaponKind.allCases) { weapon in
+                                WeaponCard(weapon: weapon)
+                            }
                         }
                     }
                     .padding(.horizontal)
@@ -44,6 +57,16 @@ struct SkinShopView: View {
                 }
             }
         }
+    }
+}
+
+private struct SectionHeader: View {
+    let title: String
+
+    var body: some View {
+        Text(title)
+            .font(.headline.bold())
+            .foregroundStyle(.white.opacity(0.7))
     }
 }
 
@@ -56,7 +79,7 @@ private struct SkinCard: View {
 
     var body: some View {
         VStack(spacing: 10) {
-            SkinPreviewImage(imageName: skin.previewImageName)
+            PixelArtImage(imageName: skin.previewImageName)
                 .frame(height: 66)
 
             Text(skin.displayName)
@@ -91,7 +114,6 @@ private struct SkinCard: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(viewModel.snowCoins >= skin.cost ? .cyan : .gray)
-                .disabled(viewModel.snowCoins < skin.cost)
             }
         }
         .padding(12)
@@ -99,35 +121,66 @@ private struct SkinCard: View {
     }
 }
 
-/// Renders a bundled pixel-art sprite crisply (no blur from SwiftUI's default
-/// smoothing) — the SwiftUI counterpart to `SpriteTextureLoader`'s
-/// `filteringMode = .nearest`, since the Locker's card previews are plain
-/// SwiftUI, not SpriteKit.
-private struct SkinPreviewImage: View {
-    let imageName: String
+private struct WeaponCard: View {
+    @EnvironmentObject var viewModel: GameViewModel
+    let weapon: WeaponKind
+
+    private var isUnlocked: Bool { viewModel.unlockedWeapons.contains(weapon) }
+    private var isEquipped: Bool { viewModel.selectedWeapon == weapon }
+    private var canAfford: Bool { viewModel.snowCoins >= weapon.coinCost }
 
     var body: some View {
-        if let uiImage = UIImage.loose(named: imageName) {
-            Image(uiImage: uiImage)
-                .resizable()
-                .interpolation(.none)
-                .aspectRatio(contentMode: .fit)
-        } else {
-            Color.clear
-        }
-    }
-}
+        VStack(spacing: 10) {
+            PixelArtImage(imageName: weapon.iconName)
+                .frame(height: 66)
 
-private extension UIImage {
-    /// Loads a PNG from the bundle root by name, matching `SpriteTextureLoader`'s
-    /// lookup — XcodeGen flattens `Resources/` into the bundle root rather than
-    /// preserving subfolders, so no `subdirectory:` parameter is needed.
-    static func loose(named name: String) -> UIImage? {
-        guard let url = Bundle.main.url(forResource: name, withExtension: "png") else {
-            assertionFailure("Missing sprite resource: \(name).png")
-            return nil
+            Text(weapon.displayName)
+                .font(.subheadline.bold())
+                .foregroundStyle(.white)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+
+            if isEquipped {
+                Text("Equipped")
+                    .font(.caption.bold())
+                    .foregroundStyle(.green)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 6)
+            } else if isUnlocked {
+                Button {
+                    viewModel.selectWeapon(weapon)
+                } label: {
+                    Text("Equip")
+                        .font(.caption.bold())
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 6)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.blue)
+            } else {
+                Button {
+                    viewModel.purchaseWeapon(weapon)
+                } label: {
+                    Label("\(weapon.coinCost)", systemImage: "snowflake")
+                        .font(.caption.bold())
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 6)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(canAfford ? .cyan : .gray)
+
+                // A weapon with a free level path also shows how to get it
+                // without spending coins — the coin cost above is a rush-buy,
+                // not the only way in.
+                if let unlockLevel = weapon.unlockLevel {
+                    Text("or reach Level \(unlockLevel)")
+                        .font(.caption2)
+                        .foregroundStyle(.white.opacity(0.5))
+                }
+            }
         }
-        return UIImage(contentsOfFile: url.path)
+        .padding(12)
+        .background(.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 16))
     }
 }
 

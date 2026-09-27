@@ -6,6 +6,8 @@ import SwiftUI
 struct HUDView: View {
     @EnvironmentObject var viewModel: GameViewModel
     @State private var showLevelBanner = false
+    @State private var unlockedWeaponBanner: WeaponKind?
+    @State private var warResultToast: YetiWarResult?
 
     var body: some View {
         ZStack {
@@ -66,11 +68,28 @@ struct HUDView: View {
                     .allowsHitTesting(false)
                 }
 
+                if viewModel.yetiWarActive {
+                    YetiWarHUDRow(timeRemaining: viewModel.yetiWarTimeRemaining, kills: viewModel.yetiWarKillCount)
+                        .allowsHitTesting(false)
+                }
+
                 Spacer()
             }
 
             if showLevelBanner {
                 LevelUpBanner(level: viewModel.level)
+                    .transition(.scale(scale: 0.7).combined(with: .opacity))
+                    .allowsHitTesting(false)
+            }
+
+            if let weapon = unlockedWeaponBanner {
+                WeaponUnlockedBanner(weapon: weapon)
+                    .transition(.scale(scale: 0.7).combined(with: .opacity))
+                    .allowsHitTesting(false)
+            }
+
+            if let result = warResultToast {
+                YetiWarResultToast(result: result)
                     .transition(.scale(scale: 0.7).combined(with: .opacity))
                     .allowsHitTesting(false)
             }
@@ -84,6 +103,28 @@ struct HUDView: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.1) {
                 withAnimation(.easeOut(duration: 0.3)) {
                     showLevelBanner = false
+                }
+            }
+        }
+        .onChange(of: viewModel.weaponJustUnlocked) { _, weapon in
+            guard let weapon else { return }
+            withAnimation(.spring(response: 0.35, dampingFraction: 0.6)) {
+                unlockedWeaponBanner = weapon
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) {
+                withAnimation(.easeOut(duration: 0.3)) {
+                    unlockedWeaponBanner = nil
+                }
+            }
+        }
+        .onChange(of: viewModel.yetiWarResult) { _, result in
+            guard let result else { return }
+            withAnimation(.spring(response: 0.35, dampingFraction: 0.6)) {
+                warResultToast = result
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                withAnimation(.easeOut(duration: 0.3)) {
+                    warResultToast = nil
                 }
             }
         }
@@ -136,6 +177,60 @@ private struct LevelUpBanner: View {
         .foregroundStyle(.white)
         .padding(24)
         .background(.blue.opacity(0.85), in: RoundedRectangle(cornerRadius: 20))
+        .shadow(radius: 12)
+    }
+}
+
+/// Countdown + kill count shown while a Yeti War is active.
+private struct YetiWarHUDRow: View {
+    let timeRemaining: TimeInterval
+    let kills: Int
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Label("\(Int(timeRemaining.rounded(.up)))s", systemImage: "timer")
+            Label("\(kills)", systemImage: "scope")
+        }
+        .font(.caption.bold())
+        .foregroundStyle(.white)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 6)
+        .background(.red.opacity(0.85), in: Capsule())
+    }
+}
+
+/// Brief celebratory banner shown when a weapon is auto-unlocked by level.
+private struct WeaponUnlockedBanner: View {
+    let weapon: WeaponKind
+
+    var body: some View {
+        VStack(spacing: 4) {
+            Image(systemName: "lock.open.fill")
+                .font(.largeTitle)
+            Text("\(weapon.displayName) Unlocked!")
+                .font(.system(.title3, design: .rounded, weight: .heavy))
+        }
+        .foregroundStyle(.white)
+        .padding(24)
+        .background(.orange.opacity(0.9), in: RoundedRectangle(cornerRadius: 20))
+        .shadow(radius: 12)
+    }
+}
+
+/// Brief summary toast shown once a Yeti War ends.
+private struct YetiWarResultToast: View {
+    let result: YetiWarResult
+
+    var body: some View {
+        VStack(spacing: 4) {
+            Text("Yeti War Survived!")
+                .font(.system(.title3, design: .rounded, weight: .heavy))
+            Text("\(result.kills) kills · +\(result.bonusCoins) 🔷")
+                .font(.subheadline.bold())
+        }
+        .foregroundStyle(.white)
+        .padding(20)
+        .background(.purple.opacity(0.9), in: RoundedRectangle(cornerRadius: 20))
         .shadow(radius: 12)
     }
 }

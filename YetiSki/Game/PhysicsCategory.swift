@@ -9,4 +9,5 @@ enum PhysicsCategory {
     static let boundary: UInt32 = 0x1 << 3
     static let ramp: UInt32 = 0x1 << 4
     static let pickup: UInt32 = 0x1 << 5
+    static let bullet: UInt32 = 0x1 << 6
 }

@@ -214,4 +214,98 @@ struct DifficultyManager {
     let snowboarderDriftAmplitude: CGFloat = 70
     /// Seconds for one full left-right-left drift cycle.
     let snowboarderDriftPeriod: TimeInterval = 2.2
+
+    // MARK: - Yeti War
+
+    /// Level at which a Yeti War can first happen.
+    let yetiWarMinLevel = 5
+
+    /// Chance per check tick (see `GameScene`'s war timer) that a Yeti War
+    /// starts, if one isn't already active. Deliberately much rarer than a
+    /// normal single-yeti ambush — this is a big set-piece event, not a
+    /// frequent hazard.
+    func yetiWarProbability(atLevel level: Int) -> Double {
+        guard level >= yetiWarMinLevel else { return 0 }
+        let t = Double(levelProgress(level))
+        return 0.05 + 0.12 * t
+    }
+
+    /// Hard cap on how long the skier can go without a Yeti War once past
+    /// `yetiWarMinLevel` — same pity-timer role as `maxTimeBetweenAmbushes`.
+    func maxTimeBetweenYetiWars(atLevel level: Int) -> TimeInterval {
+        let t = Double(levelProgress(level))
+        let base: TimeInterval = 45
+        let floor: TimeInterval = 25
+        return base - (base - floor) * t
+    }
+
+    /// How often (seconds) `GameScene` rolls the dice on starting a Yeti War.
+    let yetiWarCheckInterval: TimeInterval = 5.0
+
+    /// How long a Yeti War lasts once the player confirms a weapon — starts
+    /// short and grows with level, per the original request.
+    func yetiWarDuration(atLevel level: Int) -> TimeInterval {
+        let t = Double(levelProgress(level))
+        let base: TimeInterval = 10
+        let cap: TimeInterval = 22
+        return base + (cap - base) * t
+    }
+
+    /// How many yetis spawn over the course of one war, paced evenly across
+    /// its duration.
+    func yetiWarHordeCount(atLevel level: Int) -> Int {
+        let t = Double(levelProgress(level))
+        let base = 30.0
+        let cap = 60.0
+        return Int(base + (cap - base) * t)
+    }
+
+    /// Straight-up closing speed (points/second, on top of scroll speed) for
+    /// a horde yeti — slower than a normal ambush's `yetiClosingSpeed`
+    /// (110...220) since there are many at once. Most of the horde also
+    /// doesn't home in on the skier's lane (see `yetiWarChaserProbability`),
+    /// which is what keeps the majority fair shooting-gallery targets rather
+    /// than an unavoidable chase.
+    func yetiWarYetiSpeed(atLevel level: Int) -> CGFloat {
+        let t = CGFloat(levelProgress(level))
+        return 60 + (100 - 60) * t
+    }
+
+    /// Chance, per horde member as it spawns, that it actively chases the
+    /// skier's lane (`YetiNode.chasesSkier`) instead of walking straight up
+    /// — a minority, so most of the horde stays dodge-or-shoot while a few
+    /// genuinely come at you.
+    func yetiWarChaserProbability(atLevel level: Int) -> Double {
+        let t = Double(levelProgress(level))
+        return 0.15 + 0.2 * t
+    }
+
+    /// Turn speed for a chasing horde member — capped below the skier's own
+    /// dash speed (same rationale as `yetiTurnSpeed`) and gentler than a
+    /// normal ambush's, since several chasers can be active at once.
+    func yetiWarChaserTurnSpeed(atLevel level: Int) -> CGFloat {
+        let t = CGFloat(levelProgress(level))
+        return 100 + (180 - 100) * t
+    }
+
+    /// Chance, per spawn tick, that a whole row of yetis lands across
+    /// several lanes at once instead of a single one — reads as a wave
+    /// hitting the slope rather than a steady trickle.
+    let yetiWarRowSpawnProbability = 0.3
+    /// How many yetis make up a row spawn, when one happens.
+    let yetiWarRowSpawnRange = 2...3
+
+    /// Snow Coins + distance awarded immediately for shooting down one horde yeti.
+    let yetiWarKillCoinBonus = 1
+    let yetiWarKillDistanceBonus: CGFloat = 15
+
+    /// Extra Snow Coins per kill, paid out as one lump sum when the war ends
+    /// — on top of the per-kill bonus above, rewarding a full clear.
+    let yetiWarClearBonusPerKill = 2
+
+    /// Bullet travel speed (points/second) and the shared auto-fire interval
+    /// — every `WeaponKind` fires at this same rate for now (see its doc
+    /// comment); only name/icon/unlock path differ until a future pass.
+    let bulletSpeed: CGFloat = 900
+    let weaponFireInterval: TimeInterval = 0.35
 }
