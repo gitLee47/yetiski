@@ -7,7 +7,18 @@ final class SkierNode: SKNode {
     static let width: CGFloat = 34
     static let height: CGFloat = 46
 
-    private(set) var isInvincible = false
+    /// True while any of the three invincibility sources below is active.
+    /// Tracked as separate flags rather than one shared boolean — hit-flash,
+    /// jump, and shield each run on their own independent timer, so if a
+    /// ramp jump (which "always registers, even mid-invincibility" — see
+    /// `GameScene.didBegin`) fires while a shield is still active, the
+    /// jump's shorter duration used to clear the flag early and silently
+    /// end the shield's protection while its bubble was still visibly
+    /// pulsing on screen.
+    var isInvincible: Bool { hitFlashActive || jumpActive || shieldActive }
+    private var hitFlashActive = false
+    private var jumpActive = false
+    private var shieldActive = false
     private let bodyContainer = SKNode()
     private let shieldBubble = SKShapeNode(circleOfRadius: SkierNode.width * 0.85)
     private let slipIndicator = SKShapeNode(circleOfRadius: SkierNode.width * 0.8)
@@ -85,14 +96,14 @@ final class SkierNode: SKNode {
 
     /// Flashes the skier and grants brief invincibility after taking a hit.
     func playHitFlash(duration: TimeInterval = 1.0) {
-        isInvincible = true
+        hitFlashActive = true
         let blink = SKAction.sequence([
             SKAction.fadeAlpha(to: 0.2, duration: 0.08),
             SKAction.fadeAlpha(to: 1.0, duration: 0.08),
         ])
         let blinkCount = Int(duration / 0.16)
         bodyContainer.run(.repeat(blink, count: max(1, blinkCount))) { [weak self] in
-            self?.isInvincible = false
+            self?.hitFlashActive = false
         }
     }
 
@@ -101,7 +112,7 @@ final class SkierNode: SKNode {
     /// to clear them. Animates `bodyContainer` only (not `self`), so it never
     /// fights with `moveTo(x:)`'s lane-steering action on the node itself.
     func playJump(duration: TimeInterval) {
-        isInvincible = true
+        jumpActive = true
         bodyContainer.removeAction(forKey: "jump")
 
         let riseHeight: CGFloat = 20
@@ -117,7 +128,7 @@ final class SkierNode: SKNode {
 
         let spin = SKAction.rotate(byAngle: .pi * 2, duration: duration)
 
-        let finish = SKAction.run { [weak self] in self?.isInvincible = false }
+        let finish = SKAction.run { [weak self] in self?.jumpActive = false }
         bodyContainer.run(.sequence([.group([hop, scaleSeq, spin]), finish]), withKey: "jump")
     }
 
@@ -125,7 +136,7 @@ final class SkierNode: SKNode {
     /// the duration, shown as a pulsing translucent bubble around the skier —
     /// a distinct visual from the hit-flash blink and the ramp's hop/spin.
     func playShield(duration: TimeInterval) {
-        isInvincible = true
+        shieldActive = true
         shieldBubble.removeAllActions()
 
         let pulse = SKAction.sequence([
@@ -134,7 +145,7 @@ final class SkierNode: SKNode {
         ])
         let show = SKAction.fadeAlpha(to: 1.0, duration: 0.15)
         let hide = SKAction.fadeAlpha(to: 0, duration: 0.25)
-        let finish = SKAction.run { [weak self] in self?.isInvincible = false }
+        let finish = SKAction.run { [weak self] in self?.shieldActive = false }
 
         shieldBubble.run(.sequence([
             show,
