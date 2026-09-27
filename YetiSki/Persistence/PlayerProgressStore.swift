@@ -11,6 +11,8 @@ final class PlayerProgressStore {
     private let snowCoinsKey = "com.lijulee.yetiski.snowCoins"
     private let unlockedSkinsKey = "com.lijulee.yetiski.unlockedSkins"
     private let selectedSkinKey = "com.lijulee.yetiski.selectedSkin"
+    private let weeklyBestKey = "com.lijulee.yetiski.weeklyBestDistance"
+    private let weeklyPeriodKey = "com.lijulee.yetiski.weeklyPeriodID"
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
@@ -92,5 +94,41 @@ final class PlayerProgressStore {
         reviveTokens += tokens
         lastClaimDate = Date()
         return tokens
+    }
+
+    // MARK: - Weekly best
+
+    /// This week's best distance so far — an always-winnable board that
+    /// resets automatically at the start of each new calendar week, so it
+    /// never gets demoralizing the way an all-time board eventually does.
+    /// Rolls over to 0 lazily (on next read/write) rather than needing a
+    /// background timer.
+    func currentWeeklyBest() -> Int {
+        rolloverWeekIfNeeded()
+        return defaults.integer(forKey: weeklyBestKey)
+    }
+
+    /// Records a run's distance against this week's best. Returns whether it
+    /// was a new weekly best.
+    @discardableResult
+    func recordWeeklyDistance(_ distance: Int) -> Bool {
+        rolloverWeekIfNeeded()
+        guard distance > defaults.integer(forKey: weeklyBestKey) else { return false }
+        defaults.set(distance, forKey: weeklyBestKey)
+        return true
+    }
+
+    private func rolloverWeekIfNeeded() {
+        let weekID = Self.weekID(for: Date())
+        guard defaults.string(forKey: weeklyPeriodKey) != weekID else { return }
+        defaults.set(weekID, forKey: weeklyPeriodKey)
+        defaults.set(0, forKey: weeklyBestKey)
+    }
+
+    private static func weekID(for date: Date) -> String {
+        var calendar = Calendar(identifier: .iso8601)
+        calendar.timeZone = TimeZone.current
+        let components = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date)
+        return "\(components.yearForWeekOfYear ?? 0)-W\(components.weekOfYear ?? 0)"
     }
 }

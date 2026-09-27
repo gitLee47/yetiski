@@ -35,6 +35,12 @@ struct MenuView: View {
                         .foregroundStyle(.orange)
                 }
 
+                if viewModel.weeklyBest > 0 {
+                    Label("This Week: \(viewModel.weeklyBest) m", systemImage: "calendar")
+                        .font(.subheadline)
+                        .foregroundStyle(.blue)
+                }
+
                 HStack(spacing: 16) {
                     if viewModel.reviveTokens > 0 {
                         Label("\(viewModel.reviveTokens)", systemImage: "ticket.fill")
@@ -68,10 +74,17 @@ struct MenuView: View {
                 .padding(.bottom, 8)
 
                 if GameCenterManager.shared.isAuthenticated {
-                    Button {
-                        GameCenterManager.shared.presentLeaderboard()
-                    } label: {
-                        Label("Leaderboard", systemImage: "list.number")
+                    HStack(spacing: 20) {
+                        Button {
+                            GameCenterManager.shared.presentLeaderboard()
+                        } label: {
+                            Label("All-Time", systemImage: "list.number")
+                        }
+                        Button {
+                            GameCenterManager.shared.presentLeaderboard(weekly: true)
+                        } label: {
+                            Label("This Week", systemImage: "calendar")
+                        }
                     }
                     .padding(.bottom, 8)
                 }

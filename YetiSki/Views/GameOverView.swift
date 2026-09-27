@@ -6,6 +6,7 @@ struct GameOverView: View {
     @State private var shareImageURL: URL?
 
     private var isNewHighScore: Bool { viewModel.distance >= viewModel.highScore && viewModel.distance > 0 }
+    private var isNewWeeklyBest: Bool { viewModel.distance >= viewModel.weeklyBest && viewModel.distance > 0 }
 
     private var shareText: String {
         "I skied \(viewModel.distance) m in YetiSki! \(viewModel.deathCaption) Can you beat me? 🎿🏔️"
@@ -34,10 +35,19 @@ struct GameOverView: View {
                         Label("New Best!", systemImage: "star.fill")
                             .font(.headline)
                             .foregroundStyle(.yellow)
+                    } else if isNewWeeklyBest {
+                        Label("New Weekly Best!", systemImage: "calendar.badge.checkmark")
+                            .font(.headline)
+                            .foregroundStyle(.cyan)
                     } else {
                         Text("Best: \(viewModel.highScore) m")
                             .font(.subheadline)
                             .foregroundStyle(.white.opacity(0.8))
+                    }
+                    if !isNewHighScore && !isNewWeeklyBest {
+                        Text("This Week: \(viewModel.weeklyBest) m")
+                            .font(.caption)
+                            .foregroundStyle(.white.opacity(0.65))
                     }
                 }
 
@@ -79,10 +89,17 @@ struct GameOverView: View {
                     .tint(.white)
 
                     if GameCenterManager.shared.isAuthenticated {
-                        Button {
-                            GameCenterManager.shared.presentLeaderboard()
-                        } label: {
-                            Label("Leaderboard", systemImage: "list.number")
+                        HStack(spacing: 20) {
+                            Button {
+                                GameCenterManager.shared.presentLeaderboard()
+                            } label: {
+                                Label("All-Time", systemImage: "list.number")
+                            }
+                            Button {
+                                GameCenterManager.shared.presentLeaderboard(weekly: true)
+                            } label: {
+                                Label("This Week", systemImage: "calendar")
+                            }
                         }
                         .tint(.white)
                     }

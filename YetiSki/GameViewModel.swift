@@ -16,6 +16,10 @@ final class GameViewModel: ObservableObject {
     @Published var distance: Int = 0
     @Published var lives: Int = GameConstants.startingLives
     @Published var highScore: Int = 0
+    /// Best distance so far in the current calendar week — resets
+    /// automatically each week so there's always a winnable competition,
+    /// even once the all-time board is dominated by early high scores.
+    @Published var weeklyBest: Int = 0
     @Published var wasCaughtByYeti: Bool = false
     /// A snarky one-liner picked when the run ends, shown on Game Over and
     /// folded into the share text — makes the death moment more memorable
@@ -66,6 +70,7 @@ final class GameViewModel: ObservableObject {
 
     init() {
         highScore = highScoreStore.bestDistance
+        weeklyBest = progressStore.currentWeeklyBest()
         reviveTokens = progressStore.reviveTokens
         dailyStreak = progressStore.dailyStreak
         snowCoins = progressStore.snowCoins
@@ -238,6 +243,9 @@ final class GameViewModel: ObservableObject {
         if distance > highScore {
             highScore = distance
             highScoreStore.bestDistance = distance
+        }
+        if progressStore.recordWeeklyDistance(distance) {
+            weeklyBest = distance
         }
         HapticsManager.shared.gameOverImpact()
         SoundManager.shared.playGameOver()
