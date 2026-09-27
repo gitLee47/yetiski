@@ -218,9 +218,7 @@ struct DifficultyManager {
     // MARK: - Yeti War
 
     /// Level at which a Yeti War can first happen.
-    // TEMP-TESTING-BYPASS: normally 5 — dropped to 1 so a war can be tested
-    // from the very start of a run. Revert to 5 when done testing.
-    let yetiWarMinLevel = 1
+    let yetiWarMinLevel = 5
 
     /// Chance per check tick (see `GameScene`'s war timer) that a Yeti War
     /// starts, if one isn't already active. Deliberately much rarer than a
@@ -235,12 +233,9 @@ struct DifficultyManager {
     /// Hard cap on how long the skier can go without a Yeti War once past
     /// `yetiWarMinLevel` — same pity-timer role as `maxTimeBetweenAmbushes`.
     func maxTimeBetweenYetiWars(atLevel level: Int) -> TimeInterval {
-        // TEMP-TESTING-BYPASS: normally 45...25 — dropped so the pity timer
-        // guarantees a war within a few seconds of starting a run, instead
-        // of possibly waiting up to 45s. Revert when done testing.
         let t = Double(levelProgress(level))
-        let base: TimeInterval = 6
-        let floor: TimeInterval = 4
+        let base: TimeInterval = 45
+        let floor: TimeInterval = 25
         return base - (base - floor) * t
     }
 
