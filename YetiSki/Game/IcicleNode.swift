@@ -20,7 +20,7 @@ final class IcicleNode: SKNode {
     private let fallDuration: TimeInterval
 
     private let marker: SKShapeNode
-    private let shard: SKShapeNode
+    private let shard: SKSpriteNode
     private static let fallStartOffset: CGFloat = 70
 
     init(telegraphDuration: TimeInterval, fallDuration: TimeInterval) {
@@ -33,10 +33,10 @@ final class IcicleNode: SKNode {
         marker.strokeColor = SKColor.red.withAlphaComponent(0.85)
         marker.lineWidth = 2
 
-        shard = SKShapeNode(path: IcicleNode.shardPath())
-        shard.fillColor = SKColor(red: 0.75, green: 0.93, blue: 0.99, alpha: 0.95)
-        shard.strokeColor = SKColor(red: 0.45, green: 0.78, blue: 0.95, alpha: 1)
-        shard.lineWidth = 1.5
+        // Hand-authored pixel-art shard (see `SpriteTextureLoader`) — no
+        // ready-made icicle tile exists in the sourced Kenney pack.
+        shard = SKSpriteNode(texture: SpriteTextureLoader.texture(named: "sprite_icicle"))
+        shard.size = CGSize(width: 20, height: 32)
         shard.isHidden = true
         shard.position = CGPoint(x: 0, y: IcicleNode.fallStartOffset)
 
@@ -84,16 +84,5 @@ final class IcicleNode: SKNode {
         case .impacted:
             return false
         }
-    }
-
-    private static func shardPath() -> CGPath {
-        let path = CGMutablePath()
-        path.move(to: CGPoint(x: -5, y: 16))
-        path.addLine(to: CGPoint(x: 5, y: 16))
-        path.addLine(to: CGPoint(x: 2, y: -16))
-        path.addLine(to: CGPoint(x: 0, y: -22))
-        path.addLine(to: CGPoint(x: -2, y: -16))
-        path.closeSubpath()
-        return path
     }
 }
