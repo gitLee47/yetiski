@@ -183,6 +183,8 @@ final class GameViewModel: ObservableObject {
         isOfferingContinue = false
         lives = 1
         continueRunID += 1
+        HapticsManager.shared.powerup()
+        SoundManager.shared.playPowerup()
     }
 
     /// Declines the continue offer (tapped "No Thanks" or the countdown ran out).
