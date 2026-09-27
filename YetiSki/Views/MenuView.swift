@@ -34,6 +34,12 @@ struct MenuView: View {
                         .foregroundStyle(.orange)
                 }
 
+                if viewModel.reviveTokens > 0 {
+                    Label("\(viewModel.reviveTokens) Revive Token\(viewModel.reviveTokens == 1 ? "" : "s")", systemImage: "ticket.fill")
+                        .font(.subheadline.bold())
+                        .foregroundStyle(.green)
+                }
+
                 Spacer()
 
                 Button {
@@ -64,6 +70,10 @@ struct MenuView: View {
                     .padding(.horizontal, 40)
 
                 Spacer(minLength: 40)
+            }
+
+            if viewModel.showDailyReward {
+                DailyRewardView()
             }
         }
     }

@@ -9,16 +9,23 @@
 /* Begin PBXBuildFile section */
 		05FC7EA86DE28CB4642E7B34 /* HighScoreStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAC36302B3EFE6FB8A4BD391 /* HighScoreStore.swift */; };
 		0AF59D96A4FD267722C16F4A /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE0E6BE2B715587FE850C3B4 /* GameViewModel.swift */; };
+		0DF2080CE5F90D420563C84D /* PickupNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68F1DBBCAD7057EF3B18DA6A /* PickupNode.swift */; };
 		14F64AF53AB75D756FBB97BF /* DifficultyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ADA52F4C1E4A5D4C74601EE /* DifficultyManager.swift */; };
 		169F1BA09E9AA0353160D144 /* GameContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59993584587C7845BAB3B25D /* GameContainerView.swift */; };
 		239DFBFA9BCEF8CD9D2DCB97 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D3A8E2406AA1CE3A3496B56 /* Assets.xcassets */; };
+		2947DDB7E9E5A323E6778065 /* ScoreCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A12B46936D013026B4383A /* ScoreCardView.swift */; };
 		3041DA8C5B5AD4912F8D0E49 /* GameOverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C43F1DFCEC9C8CCF68A4DD3 /* GameOverView.swift */; };
 		35C35F005D9302218E3B4916 /* HapticsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 352F0BD10382947B6E637EDC /* HapticsManager.swift */; };
+		3D8BEC078532BF1C269DB6A5 /* DailyRewardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CB647824C3B08507F76FD2A /* DailyRewardView.swift */; };
+		5399388966997F0F9C702385 /* SnowboarderNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B3C7B452C4AACCDE4544E31 /* SnowboarderNode.swift */; };
 		682EBEF8C323DBD7A676B57E /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6FA727E03974E033E8B1940 /* GameScene.swift */; };
+		761320784D46AC329B4005FB /* ContinueOfferView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF693B6BF4311543EC2BDBC /* ContinueOfferView.swift */; };
 		8F12FE6E3E767137DC993A58 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BFE754FFDD9F49D0F39A56 /* RootView.swift */; };
 		91EEF94720DD6E92246F3C7A /* GameCenterManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10F8981358549F87D70A632 /* GameCenterManager.swift */; };
+		9610F126ABD5652E0237ADAC /* IcicleNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2515A26A49931ED49EBE69 /* IcicleNode.swift */; };
 		9AA8F335632A1C3E501B8896 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 051AE88814A615477D1E057C /* README.md */; };
 		9E208BD3A3980AC8050FB453 /* YetiSkiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6894268E7CDB5B93201B77 /* YetiSkiApp.swift */; };
+		9F1A1697E680FE7C5F3FC467 /* PlayerProgressStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 886AA86B779C883686A7D3D0 /* PlayerProgressStore.swift */; };
 		A2A5BD78399C7126B6C6460D /* PauseOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B348400C6762D8773CB9CC /* PauseOverlayView.swift */; };
 		A888A5771A66F1ED443AA330 /* PhysicsCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0683599C70BEC47B7EBB43 /* PhysicsCategory.swift */; };
 		C1AD6DDAB7E680FB19433E90 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F6DD26F963A10BC6D40186E /* MenuView.swift */; };
@@ -42,10 +49,16 @@
 		417BF4E1FA4161355DC4BE41 /* YetiNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YetiNode.swift; sourceTree = "<group>"; };
 		508CC28C61F9ED237E7819BB /* RampNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RampNode.swift; sourceTree = "<group>"; };
 		59993584587C7845BAB3B25D /* GameContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameContainerView.swift; sourceTree = "<group>"; };
+		5C2515A26A49931ED49EBE69 /* IcicleNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IcicleNode.swift; sourceTree = "<group>"; };
 		5C6894268E7CDB5B93201B77 /* YetiSkiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YetiSkiApp.swift; sourceTree = "<group>"; };
+		5FF693B6BF4311543EC2BDBC /* ContinueOfferView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContinueOfferView.swift; sourceTree = "<group>"; };
+		68F1DBBCAD7057EF3B18DA6A /* PickupNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickupNode.swift; sourceTree = "<group>"; };
 		859EE74B003D1F6CE0D8A37B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		886AA86B779C883686A7D3D0 /* PlayerProgressStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerProgressStore.swift; sourceTree = "<group>"; };
+		8B3C7B452C4AACCDE4544E31 /* SnowboarderNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnowboarderNode.swift; sourceTree = "<group>"; };
 		8E0683599C70BEC47B7EBB43 /* PhysicsCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhysicsCategory.swift; sourceTree = "<group>"; };
 		9C859B1E3C4344D0A9C0CE72 /* SoundManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundManager.swift; sourceTree = "<group>"; };
+		9CB647824C3B08507F76FD2A /* DailyRewardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyRewardView.swift; sourceTree = "<group>"; };
 		9FB64CBC21F8AB15D167BB0E /* SkierNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkierNode.swift; sourceTree = "<group>"; };
 		A63DFCD0EB9B2879E8165B21 /* YetiSki.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = YetiSki.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B10F8981358549F87D70A632 /* GameCenterManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCenterManager.swift; sourceTree = "<group>"; };
@@ -53,6 +66,7 @@
 		DAC36302B3EFE6FB8A4BD391 /* HighScoreStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighScoreStore.swift; sourceTree = "<group>"; };
 		E2BFE754FFDD9F49D0F39A56 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		E6FA727E03974E033E8B1940 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
+		E7A12B46936D013026B4383A /* ScoreCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreCardView.swift; sourceTree = "<group>"; };
 		FE0E6BE2B715587FE850C3B4 /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
 		FF4A6D0EF7D675719140280E /* YetiSki.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = YetiSki.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -70,6 +84,7 @@
 			isa = PBXGroup;
 			children = (
 				DAC36302B3EFE6FB8A4BD391 /* HighScoreStore.swift */,
+				886AA86B779C883686A7D3D0 /* PlayerProgressStore.swift */,
 			);
 			path = Persistence;
 			sourceTree = "<group>";
@@ -77,12 +92,15 @@
 		5547E0C148B38B9CEA6C30A0 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				5FF693B6BF4311543EC2BDBC /* ContinueOfferView.swift */,
+				9CB647824C3B08507F76FD2A /* DailyRewardView.swift */,
 				59993584587C7845BAB3B25D /* GameContainerView.swift */,
 				1C43F1DFCEC9C8CCF68A4DD3 /* GameOverView.swift */,
 				31785C1B5564A00DDDBDF4B5 /* HUDView.swift */,
 				0F6DD26F963A10BC6D40186E /* MenuView.swift */,
 				03B348400C6762D8773CB9CC /* PauseOverlayView.swift */,
 				E2BFE754FFDD9F49D0F39A56 /* RootView.swift */,
+				E7A12B46936D013026B4383A /* ScoreCardView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -100,10 +118,13 @@
 			children = (
 				2ADA52F4C1E4A5D4C74601EE /* DifficultyManager.swift */,
 				E6FA727E03974E033E8B1940 /* GameScene.swift */,
+				5C2515A26A49931ED49EBE69 /* IcicleNode.swift */,
 				B52013736727DB33C2633D07 /* ObstacleNode.swift */,
 				8E0683599C70BEC47B7EBB43 /* PhysicsCategory.swift */,
+				68F1DBBCAD7057EF3B18DA6A /* PickupNode.swift */,
 				508CC28C61F9ED237E7819BB /* RampNode.swift */,
 				9FB64CBC21F8AB15D167BB0E /* SkierNode.swift */,
+				8B3C7B452C4AACCDE4544E31 /* SnowboarderNode.swift */,
 				417BF4E1FA4161355DC4BE41 /* YetiNode.swift */,
 			);
 			path = Game;
@@ -240,6 +261,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				761320784D46AC329B4005FB /* ContinueOfferView.swift in Sources */,
+				3D8BEC078532BF1C269DB6A5 /* DailyRewardView.swift in Sources */,
 				14F64AF53AB75D756FBB97BF /* DifficultyManager.swift in Sources */,
 				91EEF94720DD6E92246F3C7A /* GameCenterManager.swift in Sources */,
 				169F1BA09E9AA0353160D144 /* GameContainerView.swift in Sources */,
@@ -249,13 +272,18 @@
 				DB7CA174659FFCB6D196E150 /* HUDView.swift in Sources */,
 				35C35F005D9302218E3B4916 /* HapticsManager.swift in Sources */,
 				05FC7EA86DE28CB4642E7B34 /* HighScoreStore.swift in Sources */,
+				9610F126ABD5652E0237ADAC /* IcicleNode.swift in Sources */,
 				C1AD6DDAB7E680FB19433E90 /* MenuView.swift in Sources */,
 				E66BB4356F8712DC3B9C58BD /* ObstacleNode.swift in Sources */,
 				A2A5BD78399C7126B6C6460D /* PauseOverlayView.swift in Sources */,
 				A888A5771A66F1ED443AA330 /* PhysicsCategory.swift in Sources */,
+				0DF2080CE5F90D420563C84D /* PickupNode.swift in Sources */,
+				9F1A1697E680FE7C5F3FC467 /* PlayerProgressStore.swift in Sources */,
 				CCC398A88113DB6B917B1711 /* RampNode.swift in Sources */,
 				8F12FE6E3E767137DC993A58 /* RootView.swift in Sources */,
+				2947DDB7E9E5A323E6778065 /* ScoreCardView.swift in Sources */,
 				E8BF0FA6CFF28D39938D87EE /* SkierNode.swift in Sources */,
+				5399388966997F0F9C702385 /* SnowboarderNode.swift in Sources */,
 				E22C709A3E3B7C7D8844269D /* SoundManager.swift in Sources */,
 				F5D0125A45C6B17710C541FF /* YetiNode.swift in Sources */,
 				9E208BD3A3980AC8050FB453 /* YetiSkiApp.swift in Sources */,

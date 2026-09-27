@@ -1,18 +1,30 @@
 import SwiftUI
+import UIKit
 
 struct GameOverView: View {
     @EnvironmentObject var viewModel: GameViewModel
+    @State private var shareImageURL: URL?
 
     private var isNewHighScore: Bool { viewModel.distance >= viewModel.highScore && viewModel.distance > 0 }
+
+    private var shareText: String {
+        "I skied \(viewModel.distance) m in YetiSki! \(viewModel.deathCaption) Can you beat me? 🎿🏔️"
+    }
 
     var body: some View {
         ZStack {
             Color.black.opacity(0.55).ignoresSafeArea()
 
-            VStack(spacing: 20) {
+            VStack(spacing: 16) {
                 Text(viewModel.wasCaughtByYeti ? "Eaten by the Yeti!" : "Wipeout!")
                     .font(.title.bold())
                     .foregroundStyle(.white)
+
+                Text(viewModel.deathCaption)
+                    .font(.subheadline.italic())
+                    .foregroundStyle(.white.opacity(0.85))
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 32)
 
                 VStack(spacing: 4) {
                     Text("\(viewModel.distance) m")
@@ -30,6 +42,21 @@ struct GameOverView: View {
                 }
 
                 VStack(spacing: 12) {
+                    if let shareImageURL {
+                        ShareLink(
+                            item: shareImageURL,
+                            subject: Text("YetiSki"),
+                            message: Text(shareText)
+                        ) {
+                            Label("Share", systemImage: "square.and.arrow.up")
+                                .font(.title3.bold())
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 14)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(.orange)
+                    }
+
                     Button {
                         viewModel.startNewGame()
                     } label: {
@@ -63,6 +90,33 @@ struct GameOverView: View {
                 .padding(.horizontal, 32)
             }
             .padding(.vertical, 40)
+        }
+        .onAppear(perform: renderShareCard)
+    }
+
+    /// Renders `ScoreCardView` off-screen into a PNG in the temp directory
+    /// so `ShareLink` has a concrete file to hand to the share sheet.
+    private func renderShareCard() {
+        let card = ScoreCardView(
+            distance: viewModel.distance,
+            isNewHighScore: isNewHighScore,
+            caption: viewModel.deathCaption,
+            wasCaughtByYeti: viewModel.wasCaughtByYeti
+        )
+        let renderer = ImageRenderer(content: card)
+        renderer.scale = UIScreen.main.scale
+        guard let uiImage = renderer.uiImage, let data = uiImage.pngData() else { return }
+
+        if let previousURL = shareImageURL {
+            try? FileManager.default.removeItem(at: previousURL)
+        }
+
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("yetiski_share_\(UUID().uuidString).png")
+        do {
+            try data.write(to: url)
+            shareImageURL = url
+        } catch {
+            shareImageURL = nil
         }
     }
 }

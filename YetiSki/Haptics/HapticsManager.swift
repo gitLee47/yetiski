@@ -34,4 +34,15 @@ final class HapticsManager {
     func jump() {
         mediumImpact.impactOccurred()
     }
+
+    /// Positive buzz when a powerup (shield/speed boost/repellent/extra life)
+    /// is grabbed.
+    func powerup() {
+        notification.notificationOccurred(.success)
+    }
+
+    /// Tiny tap for the common snowflake collectible.
+    func snowflake() {
+        impact.impactOccurred()
+    }
 }

@@ -8,6 +8,8 @@ final class SkierNode: SKNode {
 
     private(set) var isInvincible = false
     private let bodyContainer = SKNode()
+    private let shieldBubble = SKShapeNode(circleOfRadius: SkierNode.width * 0.85)
+    private let slipIndicator = SKShapeNode(circleOfRadius: SkierNode.width * 0.8)
 
     override init() {
         super.init()
@@ -21,6 +23,24 @@ final class SkierNode: SKNode {
 
     private func buildVisuals() {
         addChild(bodyContainer)
+
+        // Shield bubble — built once, hidden until `playShield` shows it.
+        shieldBubble.fillColor = SKColor.systemBlue.withAlphaComponent(0.18)
+        shieldBubble.strokeColor = SKColor.systemBlue.withAlphaComponent(0.9)
+        shieldBubble.lineWidth = 2.5
+        shieldBubble.alpha = 0
+        shieldBubble.zPosition = -1
+        addChild(shieldBubble)
+
+        // Ice-slip indicator — a saturated cyan ring with a dashed-looking
+        // stroke, hidden until `setSlipping`. Deliberately more vivid than a
+        // pale "icy" tint would be, since that blended into the background.
+        slipIndicator.fillColor = .clear
+        slipIndicator.strokeColor = SKColor(red: 0.0, green: 0.55, blue: 0.95, alpha: 1)
+        slipIndicator.lineWidth = 3.5
+        slipIndicator.alpha = 0
+        slipIndicator.zPosition = -1
+        addChild(slipIndicator)
 
         // Skis
         let skiLength: CGFloat = 30
@@ -70,7 +90,7 @@ final class SkierNode: SKNode {
         body.affectedByGravity = false
         body.allowsRotation = false
         body.categoryBitMask = PhysicsCategory.skier
-        body.contactTestBitMask = PhysicsCategory.obstacle | PhysicsCategory.yeti | PhysicsCategory.ramp
+        body.contactTestBitMask = PhysicsCategory.obstacle | PhysicsCategory.yeti | PhysicsCategory.ramp | PhysicsCategory.pickup
         body.collisionBitMask = PhysicsCategory.none
         physicsBody = body
     }
@@ -125,5 +145,36 @@ final class SkierNode: SKNode {
 
         let finish = SKAction.run { [weak self] in self?.isInvincible = false }
         bodyContainer.run(.sequence([.group([hop, scaleSeq, spin]), finish]), withKey: "jump")
+    }
+
+    /// Activates the shield powerup: invincibility to obstacles/the yeti for
+    /// the duration, shown as a pulsing translucent bubble around the skier —
+    /// a distinct visual from the hit-flash blink and the ramp's hop/spin.
+    func playShield(duration: TimeInterval) {
+        isInvincible = true
+        shieldBubble.removeAllActions()
+
+        let pulse = SKAction.sequence([
+            SKAction.scale(to: 1.12, duration: 0.4),
+            SKAction.scale(to: 1.0, duration: 0.4),
+        ])
+        let show = SKAction.fadeAlpha(to: 1.0, duration: 0.15)
+        let hide = SKAction.fadeAlpha(to: 0, duration: 0.25)
+        let finish = SKAction.run { [weak self] in self?.isInvincible = false }
+
+        shieldBubble.run(.sequence([
+            show,
+            .repeat(pulse, count: max(1, Int(duration / 0.8))),
+            hide,
+            finish,
+        ]))
+    }
+
+    /// Toggles the ice-patch slip visual. Doesn't touch `isInvincible` — an
+    /// ice patch doesn't cost a life or grant protection, it just makes
+    /// `GameScene.steer(by:)` use a longer, sluggish move duration while active.
+    func setSlipping(_ slipping: Bool) {
+        slipIndicator.removeAllActions()
+        slipIndicator.run(.fadeAlpha(to: slipping ? 1.0 : 0, duration: 0.2))
     }
 }

@@ -4,9 +4,14 @@ enum ObstacleKind: CaseIterable {
     case stone
     case hole
     case tree
+    /// Non-damaging: doesn't cost a life, but temporarily makes steering
+    /// sluggish (see `GameScene`'s slip handling). Kept in the same
+    /// obstacle-spawn rotation for variety beyond instant-hit hazards.
+    case icePatch
 }
 
-/// A single obstacle (stone, hole, or tree) drawn as simple programmatic shapes.
+/// A single obstacle (stone, hole, tree, or ice patch) drawn as simple
+/// programmatic shapes.
 final class ObstacleNode: SKNode {
     let kind: ObstacleKind
 
@@ -17,6 +22,7 @@ final class ObstacleNode: SKNode {
         case .stone: buildStone()
         case .hole: buildHole()
         case .tree: buildTree()
+        case .icePatch: buildIcePatch()
         }
         buildPhysics(radius: kind.physicsRadius)
     }
@@ -64,6 +70,42 @@ final class ObstacleNode: SKNode {
         }
     }
 
+    private func buildIcePatch() {
+        let patch = SKShapeNode(ellipseOf: CGSize(width: 38, height: 22))
+        patch.fillColor = SKColor(red: 0.68, green: 0.9, blue: 0.99, alpha: 0.9)
+        patch.strokeColor = SKColor(red: 0.15, green: 0.55, blue: 0.85, alpha: 1)
+        patch.lineWidth = 2
+        addChild(patch)
+
+        // Jagged crack lines — the key cue that this is cracked ice, not
+        // just a patch of lighter snow.
+        let crack1 = CGMutablePath()
+        crack1.move(to: CGPoint(x: -13, y: 5))
+        crack1.addLine(to: CGPoint(x: -4, y: -1))
+        crack1.addLine(to: CGPoint(x: 2, y: 4))
+        crack1.addLine(to: CGPoint(x: 12, y: -4))
+        let crackNode1 = SKShapeNode(path: crack1)
+        crackNode1.strokeColor = SKColor(red: 0.1, green: 0.4, blue: 0.65, alpha: 0.8)
+        crackNode1.lineWidth = 1.2
+        addChild(crackNode1)
+
+        let crack2 = CGMutablePath()
+        crack2.move(to: CGPoint(x: -2, y: 4))
+        crack2.addLine(to: CGPoint(x: -6, y: -6))
+        let crackNode2 = SKShapeNode(path: crack2)
+        crackNode2.strokeColor = SKColor(red: 0.1, green: 0.4, blue: 0.65, alpha: 0.8)
+        crackNode2.lineWidth = 1.2
+        addChild(crackNode2)
+
+        // A glossy highlight streak to sell "slippery."
+        let streak = SKShapeNode(rectOf: CGSize(width: 14, height: 3), cornerRadius: 1.5)
+        streak.fillColor = SKColor(white: 1, alpha: 0.9)
+        streak.strokeColor = .clear
+        streak.zRotation = 0.3
+        streak.position = CGPoint(x: 8, y: 6)
+        addChild(streak)
+    }
+
     private static func trianglePath(radius: CGFloat, height: CGFloat) -> CGPath {
         let path = CGMutablePath()
         path.move(to: CGPoint(x: 0, y: height / 2))
@@ -90,6 +132,7 @@ private extension ObstacleKind {
         case .stone: return 13
         case .hole: return 15
         case .tree: return 16
+        case .icePatch: return 16
         }
     }
 }

@@ -18,9 +18,29 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
     private var obstacles: [ObstacleNode] = []
     private var ramps: [RampNode] = []
     private var rampSpawnTimer: TimeInterval = 0
-    private var activeYeti: YetiNode?
-    private var yetiChaseElapsed: TimeInterval = 0
+    private var pickups: [PickupNode] = []
+    private var pickupSpawnTimer: TimeInterval = 0
+    private var icicles: [IcicleNode] = []
+    private var icicleSpawnTimer: TimeInterval = 0
+    private var snowboarders: [SnowboarderNode] = []
+    private var snowboarderSpawnTimer: TimeInterval = 0
+    /// Extra scroll speed (points/second) from an active speed-boost pickup,
+    /// counted down each frame; folded into `update(_:)`'s speed calc while > 0.
+    private var speedBoostTimeRemaining: TimeInterval = 0
+    /// Mirrors the shield pickup's duration purely so the HUD knows when to
+    /// show its buff icon — the actual invincibility/visual lives on `skier`.
+    private var shieldTimeRemaining: TimeInterval = 0
+    /// While > 0 (set by an ice-patch hit), `steer(by:)` uses a longer,
+    /// sluggish move duration.
+    private var slipTimeRemaining: TimeInterval = 0
+    /// Usually holds at most one yeti; a second can join concurrently past
+    /// `DifficultyManager.dualYetiMinLevel`.
+    private var activeYetis: [YetiNode] = []
     private var yetiCheckTimer: TimeInterval = 0
+    /// While > 0 (set by the yeti-repellent pickup), ambush checks are
+    /// skipped entirely — a real "safe window", not just a delay on the
+    /// pity-timer, so a lucky probability roll can't sneak an ambush through.
+    private var yetiSuppressedTimeRemaining: TimeInterval = 0
     /// Time since the last ambush ended (or the run started, if none yet).
     /// Once this crosses `DifficultyManager.maxTimeBetweenAmbushes`, the next
     /// check forces a spawn regardless of the random roll, so a run can never
@@ -83,8 +103,18 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         obstacles.removeAll()
         ramps.forEach { $0.removeFromParent() }
         ramps.removeAll()
-        activeYeti?.removeFromParent()
-        activeYeti = nil
+        pickups.forEach { $0.removeFromParent() }
+        pickups.removeAll()
+        icicles.forEach { $0.removeFromParent() }
+        icicles.removeAll()
+        snowboarders.forEach { $0.removeFromParent() }
+        snowboarders.removeAll()
+        speedBoostTimeRemaining = 0
+        shieldTimeRemaining = 0
+        slipTimeRemaining = 0
+        skier.setSlipping(false)
+        activeYetis.forEach { $0.removeFromParent() }
+        activeYetis.removeAll()
 
         distancePoints = 0
         elapsedTime = 0
@@ -96,9 +126,12 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
 
         obstacleSpawnTimer = difficulty.obstacleSpawnInterval(atLevel: currentLevel)
         rampSpawnTimer = difficulty.rampSpawnInterval(atLevel: currentLevel)
+        pickupSpawnTimer = difficulty.pickupSpawnInterval(atLevel: currentLevel)
+        icicleSpawnTimer = difficulty.icicleSpawnInterval(atLevel: currentLevel)
+        snowboarderSpawnTimer = difficulty.snowboarderSpawnInterval(atLevel: currentLevel)
         yetiCheckTimer = difficulty.yetiCheckInterval
-        yetiChaseElapsed = 0
         timeSinceLastYeti = 0
+        yetiSuppressedTimeRemaining = 0
         lastUpdateTime = nil
         isPlaying = true
 
@@ -108,6 +141,37 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
     func stopRun() {
         isPlaying = false
         SoundManager.shared.stopBackgroundMusic()
+    }
+
+    /// Resumes the current run in place after the player spends a revive
+    /// token or watches an ad at the continue-offer prompt. Unlike
+    /// `startRun()`, this does NOT reset distance/level/elapsed time — only
+    /// the immediate hazards are cleared and the skier gets a grace-period
+    /// shield so it isn't hit again the instant play resumes. Ramps/pickups
+    /// are left in place since they're harmless.
+    func continueRun() {
+        obstacles.forEach { $0.removeFromParent() }
+        obstacles.removeAll()
+        icicles.forEach { $0.removeFromParent() }
+        icicles.removeAll()
+        snowboarders.forEach { $0.removeFromParent() }
+        snowboarders.removeAll()
+        despawnAllYetis()
+
+        currentLane = laneCount / 2
+        skier.position = CGPoint(x: laneCenterX(currentLane), y: skierY)
+        skier.alpha = 1
+        skier.zRotation = 0
+        skier.setSlipping(false)
+        slipTimeRemaining = 0
+
+        let graceDuration: TimeInterval = 3.0
+        skier.playShield(duration: graceDuration)
+        shieldTimeRemaining = graceDuration
+
+        lastUpdateTime = nil
+        isPlaying = true
+        SoundManager.shared.startBackgroundMusic()
     }
 
     /// Freezes the simulation (actions, physics, `update(_:)`) and steering
@@ -165,7 +229,8 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         let newLane = min(max(currentLane + delta, 0), laneCount - 1)
         guard newLane != currentLane else { return }
         currentLane = newLane
-        skier.moveTo(x: laneCenterX(currentLane))
+        let duration = slipTimeRemaining > 0 ? difficulty.iceSlipMoveDuration : 0.16
+        skier.moveTo(x: laneCenterX(currentLane), duration: duration)
         HapticsManager.shared.laneChange()
     }
 
@@ -185,7 +250,22 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         currentLevel = difficulty.level(atTime: elapsedTime)
         viewModel?.updateLevel(currentLevel)
 
-        let speed = difficulty.totalScrollSpeed(atDistance: currentScore, level: currentLevel)
+        if speedBoostTimeRemaining > 0 {
+            speedBoostTimeRemaining = max(0, speedBoostTimeRemaining - dt)
+        }
+        if shieldTimeRemaining > 0 {
+            shieldTimeRemaining = max(0, shieldTimeRemaining - dt)
+        }
+        if slipTimeRemaining > 0 {
+            slipTimeRemaining = max(0, slipTimeRemaining - dt)
+            if slipTimeRemaining == 0 {
+                skier.setSlipping(false)
+            }
+        }
+        viewModel?.updateBuffs(shieldActive: shieldTimeRemaining > 0, speedBoostActive: speedBoostTimeRemaining > 0)
+
+        let boost = speedBoostTimeRemaining > 0 ? difficulty.speedBoostExtraSpeed : 0
+        let speed = difficulty.totalScrollSpeed(atDistance: currentScore, level: currentLevel) + boost
         let travel = speed * CGFloat(dt)
         distancePoints += travel
         viewModel?.updateDistance(currentScore)
@@ -193,6 +273,9 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         scrollBackground(by: travel)
         advanceObstacles(travel: travel, dt: dt)
         advanceRamps(travel: travel, dt: dt)
+        advancePickups(travel: travel, dt: dt)
+        advanceIcicles(dt: dt)
+        advanceSnowboarders(travel: travel, dt: dt)
         advanceYeti(dt: dt)
     }
 
@@ -251,49 +334,184 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         ramps.append(ramp)
     }
 
+    // MARK: - Pickups
+
+    private func advancePickups(travel: CGFloat, dt: TimeInterval) {
+        pickupSpawnTimer -= dt
+        if pickupSpawnTimer <= 0 {
+            spawnPickup()
+            pickupSpawnTimer = difficulty.pickupSpawnInterval(atLevel: currentLevel)
+        }
+
+        let despawnY = size.height / 2 + 60
+        for pickup in pickups {
+            pickup.position.y += travel
+        }
+        let (remaining, despawned) = pickups.partitioned { $0.position.y > despawnY }
+        despawned.forEach { $0.removeFromParent() }
+        pickups = remaining
+    }
+
+    private func spawnPickup() {
+        let lane = Int.random(in: 0..<laneCount)
+        let kind = Self.randomPickupKind()
+        let pickup = PickupNode(kind: kind)
+        pickup.position = CGPoint(x: laneCenterX(lane), y: -size.height / 2 - 40)
+        pickup.zPosition = 4
+        addChild(pickup)
+        pickups.append(pickup)
+    }
+
+    /// Weighted random pick across `PickupKind.spawnWeight`.
+    private static func randomPickupKind() -> PickupKind {
+        let totalWeight = PickupKind.allCases.reduce(0) { $0 + $1.spawnWeight }
+        var roll = Double.random(in: 0..<totalWeight)
+        for kind in PickupKind.allCases {
+            if roll < kind.spawnWeight { return kind }
+            roll -= kind.spawnWeight
+        }
+        return .snowflake
+    }
+
+    // MARK: - Icicles
+
+    private func advanceIcicles(dt: TimeInterval) {
+        icicleSpawnTimer -= dt
+        if icicleSpawnTimer <= 0 {
+            spawnIcicle()
+            icicleSpawnTimer = difficulty.icicleSpawnInterval(atLevel: currentLevel)
+        }
+
+        for icicle in icicles where icicle.advance(dt: dt) {
+            checkIcicleImpact(icicle)
+        }
+
+        let (remaining, finished) = icicles.partitioned { $0.phase == .impacted }
+        finished.forEach { $0.removeFromParent() }
+        icicles = remaining
+    }
+
+    private func spawnIcicle() {
+        let lane = Int.random(in: 0..<laneCount)
+        let icicle = IcicleNode(
+            telegraphDuration: difficulty.icicleTelegraphDuration,
+            fallDuration: difficulty.icicleFallDuration
+        )
+        icicle.position = CGPoint(x: laneCenterX(lane), y: skierY)
+        icicle.zPosition = 9
+        addChild(icicle)
+        icicles.append(icicle)
+    }
+
+    private func checkIcicleImpact(_ icicle: IcicleNode) {
+        guard !skier.isInvincible else { return }
+        let hitRadius: CGFloat = 22
+        guard abs(icicle.position.x - skier.position.x) < hitRadius else { return }
+        registerObstacleHit()
+    }
+
+    // MARK: - Snowboarder
+
+    private func advanceSnowboarders(travel: CGFloat, dt: TimeInterval) {
+        snowboarderSpawnTimer -= dt
+        if snowboarderSpawnTimer <= 0 {
+            spawnSnowboarder()
+            snowboarderSpawnTimer = difficulty.snowboarderSpawnInterval(atLevel: currentLevel)
+        }
+
+        let despawnY = size.height / 2 + 60
+        for snowboarder in snowboarders {
+            snowboarder.position.y += travel
+            snowboarder.stepDrift(dt: dt)
+            // Keep it on the visible slope even if drift would carry an
+            // outer-lane spawn past the edge.
+            snowboarder.position.x = min(max(snowboarder.position.x, -playableHalfWidth), playableHalfWidth)
+        }
+        let (remaining, despawned) = snowboarders.partitioned { $0.position.y > despawnY }
+        despawned.forEach { $0.removeFromParent() }
+        snowboarders = remaining
+    }
+
+    private func spawnSnowboarder() {
+        let lane = Int.random(in: 0..<laneCount)
+        let snowboarder = SnowboarderNode(
+            centerX: laneCenterX(lane),
+            driftAmplitude: difficulty.snowboarderDriftAmplitude,
+            driftPeriod: difficulty.snowboarderDriftPeriod
+        )
+        snowboarder.position = CGPoint(x: laneCenterX(lane), y: -size.height / 2 - 40)
+        snowboarder.zPosition = 5
+        addChild(snowboarder)
+        snowboarders.append(snowboarder)
+    }
+
     // MARK: - Yeti
 
     private func advanceYeti(dt: TimeInterval) {
-        guard let yeti = activeYeti else {
-            yetiCheckTimer -= dt
-            timeSinceLastYeti += dt
-            let mustAmbush = timeSinceLastYeti >= difficulty.maxTimeBetweenAmbushes(atLevel: currentLevel)
-            if yetiCheckTimer <= 0 || mustAmbush {
-                yetiCheckTimer = difficulty.yetiCheckInterval
-                if mustAmbush || Double.random(in: 0..<1) < difficulty.yetiAmbushProbability(atLevel: currentLevel) {
-                    spawnYeti()
-                }
-            }
+        advanceYetiAmbushScheduling(dt: dt)
+
+        guard !activeYetis.isEmpty else { return }
+
+        let speed = difficulty.totalScrollSpeed(atDistance: currentScore, level: currentLevel)
+            + difficulty.yetiClosingSpeed(atDistance: currentScore)
+        let despawnY = size.height / 2 + 80
+
+        for yeti in activeYetis {
+            yeti.chaseElapsed += dt
+            yeti.position.y += speed * CGFloat(dt)
+            yeti.stepHoming(towardX: skier.position.x, deltaTime: dt)
+        }
+
+        let (remaining, finished) = activeYetis.partitioned {
+            $0.position.y > despawnY || $0.chaseElapsed > difficulty.yetiChaseTimeout
+        }
+        finished.forEach { $0.removeFromParent() }
+        activeYetis = remaining
+    }
+
+    /// Decides whether a new ambush should start this frame — either the
+    /// first yeti of a fresh ambush, or (past `dualYetiMinLevel`) a second
+    /// one joining an already-active chase.
+    private func advanceYetiAmbushScheduling(dt: TimeInterval) {
+        if yetiSuppressedTimeRemaining > 0 {
+            yetiSuppressedTimeRemaining = max(0, yetiSuppressedTimeRemaining - dt)
+            timeSinceLastYeti = 0
             return
         }
 
-        yetiChaseElapsed += dt
-        let speed = difficulty.totalScrollSpeed(atDistance: currentScore, level: currentLevel)
-            + difficulty.yetiClosingSpeed(atDistance: currentScore)
-        yeti.position.y += speed * CGFloat(dt)
-        yeti.stepHoming(towardX: skier.position.x, deltaTime: dt)
+        yetiCheckTimer -= dt
+        timeSinceLastYeti += dt
+        let mustAmbush = activeYetis.isEmpty
+            && timeSinceLastYeti >= difficulty.maxTimeBetweenAmbushes(atLevel: currentLevel)
+        guard yetiCheckTimer <= 0 || mustAmbush else { return }
+        yetiCheckTimer = difficulty.yetiCheckInterval
 
-        let despawnY = size.height / 2 + 80
-        if yeti.position.y > despawnY || yetiChaseElapsed > difficulty.yetiChaseTimeout {
-            despawnYeti()
+        if activeYetis.isEmpty {
+            if mustAmbush || Double.random(in: 0..<1) < difficulty.yetiAmbushProbability(atLevel: currentLevel) {
+                spawnYeti()
+            }
+        } else if activeYetis.count == 1 {
+            if Double.random(in: 0..<1) < difficulty.dualYetiAmbushProbability(atLevel: currentLevel) {
+                spawnYeti()
+            }
         }
     }
 
     private func spawnYeti() {
+        let lane = Int.random(in: 0..<laneCount)
         let yeti = YetiNode()
-        yeti.position = CGPoint(x: skier.position.x, y: -size.height / 2 - 90)
+        yeti.position = CGPoint(x: laneCenterX(lane), y: -size.height / 2 - 90)
         yeti.zPosition = 8
         yeti.turnSpeed = difficulty.yetiTurnSpeed(atDistance: currentScore)
         addChild(yeti)
-        activeYeti = yeti
-        yetiChaseElapsed = 0
+        activeYetis.append(yeti)
         timeSinceLastYeti = 0
         SoundManager.shared.playYetiRoar()
     }
 
-    private func despawnYeti() {
-        activeYeti?.removeFromParent()
-        activeYeti = nil
+    private func despawnAllYetis() {
+        activeYetis.forEach { $0.removeFromParent() }
+        activeYetis.removeAll()
     }
 
     // MARK: - Collisions
@@ -302,16 +520,21 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         guard isPlaying else { return }
         let categories = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
 
-        // Ramps always register, even mid-invincibility (e.g. chaining a
-        // second jump) — only obstacle/yeti damage respects invincibility.
+        // Ramps and pickups always register, even mid-invincibility (e.g.
+        // chaining a second jump or grabbing a shield while already
+        // invincible) — only obstacle/yeti damage respects invincibility.
         if categories & PhysicsCategory.ramp != 0 {
             handleRampContact(contact)
+            return
+        }
+        if categories & PhysicsCategory.pickup != 0 {
+            handlePickupContact(contact)
             return
         }
         guard !skier.isInvincible else { return }
 
         if categories & PhysicsCategory.yeti != 0 {
-            despawnYeti()
+            despawnAllYetis()
             isPlaying = false
             SoundManager.shared.stopBackgroundMusic()
             viewModel?.registerYetiCatch()
@@ -319,40 +542,148 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         }
 
         if categories & PhysicsCategory.obstacle != 0 {
-            removeObstacle(from: contact)
-            skier.playHitFlash()
-            let ended = viewModel?.registerHit() ?? false
-            if ended {
-                isPlaying = false
-                SoundManager.shared.stopBackgroundMusic()
+            if let obstacle = removeObstacle(from: contact) {
+                if obstacle.kind == .icePatch {
+                    slipTimeRemaining = difficulty.iceSlipDuration
+                    skier.setSlipping(true)
+                    showFloatingText("Slippery!", color: SKColor(red: 0.0, green: 0.55, blue: 0.95, alpha: 1), at: obstacle.position)
+                    return
+                }
+                registerObstacleHit()
+                return
+            }
+            if removeSnowboarder(from: contact) != nil {
+                registerObstacleHit()
+                return
             }
         }
     }
 
-    private func removeObstacle(from contact: SKPhysicsContact) {
+    /// Shared "took a hit" flow for stones/holes/trees/snowboarders — flashes
+    /// the skier, deducts a life, and ends the run if that was the last one.
+    private func registerObstacleHit() {
+        skier.playHitFlash()
+        let ended = viewModel?.registerHit() ?? false
+        if ended {
+            isPlaying = false
+            SoundManager.shared.stopBackgroundMusic()
+        }
+    }
+
+    @discardableResult
+    private func removeObstacle(from contact: SKPhysicsContact) -> ObstacleNode? {
         for node in [contact.bodyA.node, contact.bodyB.node] {
             if let obstacle = node as? ObstacleNode {
                 obstacle.removeFromParent()
                 obstacles.removeAll { $0 === obstacle }
+                return obstacle
             }
         }
+        return nil
+    }
+
+    @discardableResult
+    private func removeSnowboarder(from contact: SKPhysicsContact) -> SnowboarderNode? {
+        for node in [contact.bodyA.node, contact.bodyB.node] {
+            if let snowboarder = node as? SnowboarderNode {
+                snowboarder.removeFromParent()
+                snowboarders.removeAll { $0 === snowboarder }
+                return snowboarder
+            }
+        }
+        return nil
     }
 
     private func handleRampContact(_ contact: SKPhysicsContact) {
-        removeRamp(from: contact)
+        guard let ramp = removeRamp(from: contact) else { return }
         distancePoints += difficulty.rampJumpDistanceBonus
         skier.playJump(duration: difficulty.rampJumpDuration)
+        showFloatingText("Jump!", color: SKColor(red: 1.0, green: 0.62, blue: 0.13, alpha: 1), at: ramp.position)
         SoundManager.shared.playJump()
         HapticsManager.shared.jump()
     }
 
-    private func removeRamp(from contact: SKPhysicsContact) {
+    @discardableResult
+    private func removeRamp(from contact: SKPhysicsContact) -> RampNode? {
         for node in [contact.bodyA.node, contact.bodyB.node] {
             if let ramp = node as? RampNode {
                 ramp.removeFromParent()
                 ramps.removeAll { $0 === ramp }
+                return ramp
             }
         }
+        return nil
+    }
+
+    // MARK: - Pickup effects
+
+    private func handlePickupContact(_ contact: SKPhysicsContact) {
+        guard let pickup = removePickup(from: contact) else { return }
+        switch pickup.kind {
+        case .shield:
+            shieldTimeRemaining = difficulty.shieldDuration
+            skier.playShield(duration: difficulty.shieldDuration)
+            showFloatingText("Shield!", color: SKColor.systemBlue, at: pickup.position)
+            SoundManager.shared.playPowerup()
+            HapticsManager.shared.powerup()
+        case .speedBoost:
+            speedBoostTimeRemaining = difficulty.speedBoostDuration
+            showFloatingText("Speed Boost!", color: SKColor(red: 0.2, green: 0.75, blue: 0.35, alpha: 1), at: pickup.position)
+            SoundManager.shared.playPowerup()
+            HapticsManager.shared.powerup()
+        case .yetiRepellent:
+            if !activeYetis.isEmpty {
+                despawnAllYetis()
+            }
+            yetiSuppressedTimeRemaining = difficulty.yetiRepellentCooldownBonus
+            showFloatingText("Yeti Repelled!", color: SKColor(red: 0.95, green: 0.35, blue: 0.15, alpha: 1), at: pickup.position)
+            SoundManager.shared.playPowerup()
+            HapticsManager.shared.powerup()
+        case .extraLife:
+            viewModel?.grantExtraLife()
+            showFloatingText("+1 Life!", color: SKColor(red: 0.95, green: 0.25, blue: 0.45, alpha: 1), at: pickup.position)
+            SoundManager.shared.playPowerup()
+            HapticsManager.shared.powerup()
+        case .snowflake:
+            distancePoints += difficulty.snowflakeDistanceBonus
+            showFloatingText(
+                "+\(Int(difficulty.snowflakeDistanceBonus / 10))m",
+                color: SKColor(red: 0.25, green: 0.55, blue: 0.85, alpha: 1),
+                at: pickup.position
+            )
+            SoundManager.shared.playSnowflake()
+            HapticsManager.shared.snowflake()
+        }
+    }
+
+    @discardableResult
+    private func removePickup(from contact: SKPhysicsContact) -> PickupNode? {
+        for node in [contact.bodyA.node, contact.bodyB.node] {
+            if let pickup = node as? PickupNode {
+                pickup.removeFromParent()
+                pickups.removeAll { $0 === pickup }
+                return pickup
+            }
+        }
+        return nil
+    }
+
+    /// A short label that rises and fades at a pickup's position, explaining
+    /// what it just did — entirely self-contained in SpriteKit, no SwiftUI
+    /// state needed.
+    private func showFloatingText(_ text: String, color: SKColor, at position: CGPoint) {
+        let label = SKLabelNode(text: text)
+        label.fontName = "AvenirNext-Bold"
+        label.fontSize = 17
+        label.fontColor = color
+        label.position = CGPoint(x: position.x, y: position.y + 20)
+        label.zPosition = 15
+        addChild(label)
+
+        let rise = SKAction.moveBy(x: 0, y: 34, duration: 0.85)
+        rise.timingMode = .easeOut
+        let fade = SKAction.sequence([.wait(forDuration: 0.35), .fadeOut(withDuration: 0.5)])
+        label.run(.sequence([.group([rise, fade]), .removeFromParent()]))
     }
 }
 

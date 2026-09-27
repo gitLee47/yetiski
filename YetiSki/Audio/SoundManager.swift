@@ -46,6 +46,8 @@ final class SoundManager {
     func playGameOver() { play("game_over") }
     func playLevelUp() { play("level_up") }
     func playJump() { play("jump") }
+    func playSnowflake() { play("snowflake") }
+    func playPowerup() { play("powerup") }
 
     private func play(_ name: String) {
         guard let url = resourceURL(named: name) else { return }

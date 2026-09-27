@@ -31,7 +31,7 @@ struct HUDView: View {
 
                     VStack(alignment: .trailing, spacing: 8) {
                         HStack(spacing: 4) {
-                            ForEach(0..<GameConstants.startingLives, id: \.self) { index in
+                            ForEach(0..<GameConstants.maxLives, id: \.self) { index in
                                 Image(systemName: "figure.skiing.downhill")
                                     .foregroundStyle(index < viewModel.lives ? .blue : .gray.opacity(0.3))
                             }
@@ -53,6 +53,18 @@ struct HUDView: View {
                     }
                 }
                 .padding()
+
+                if viewModel.shieldActive || viewModel.speedBoostActive {
+                    HStack(spacing: 6) {
+                        if viewModel.shieldActive {
+                            BuffIcon(systemName: "shield.fill", color: .blue)
+                        }
+                        if viewModel.speedBoostActive {
+                            BuffIcon(systemName: "bolt.fill", color: .green)
+                        }
+                    }
+                    .allowsHitTesting(false)
+                }
 
                 Spacer()
             }
@@ -93,6 +105,20 @@ private struct HUDIconButton: View {
                 .background(.black.opacity(0.35), in: Circle())
         }
         .accessibilityLabel(accessibilityLabel)
+    }
+}
+
+/// Small icon shown while a timed powerup (shield/speed boost) is active.
+private struct BuffIcon: View {
+    let systemName: String
+    let color: Color
+
+    var body: some View {
+        Image(systemName: systemName)
+            .font(.system(size: 14, weight: .bold))
+            .foregroundStyle(.white)
+            .frame(width: 30, height: 30)
+            .background(color, in: Circle())
     }
 }
 

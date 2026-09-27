@@ -10,6 +10,11 @@ final class YetiNode: SKNode {
 
     /// Max horizontal speed (points/second) while homing toward the skier.
     var turnSpeed: CGFloat = 260
+    /// Seconds since this yeti spawned — `GameScene` increments this each
+    /// frame and despawns the yeti once it exceeds the chase timeout. Kept
+    /// per-instance (rather than a single scalar in `GameScene`) so multiple
+    /// yetis can be active with independent timeouts.
+    var chaseElapsed: TimeInterval = 0
 
     private static let furColor = SKColor(white: 0.92, alpha: 1)
     private static let furShadow = SKColor(white: 0.74, alpha: 1)
