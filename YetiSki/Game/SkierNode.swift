@@ -1,6 +1,7 @@
 import SpriteKit
 
-/// The player's skier, drawn as simple programmatic shapes (no image assets).
+/// The player's skier — a pixel-art sprite (Kenney's "Tiny Ski" pack, see
+/// `SpriteTextureLoader`) animated between its 2 pole-push frames.
 /// Exposes discrete lane-shift steering and hit-flash/jump invincibility helpers.
 final class SkierNode: SKNode {
     static let width: CGFloat = 34
@@ -11,10 +12,9 @@ final class SkierNode: SKNode {
     private let shieldBubble = SKShapeNode(circleOfRadius: SkierNode.width * 0.85)
     private let slipIndicator = SKShapeNode(circleOfRadius: SkierNode.width * 0.8)
 
-    // Cosmetic parts — recolored by `applySkin(_:)`.
-    private let torso = SKShapeNode(rectOf: CGSize(width: 20, height: 20), cornerRadius: 6)
-    private let head = SKShapeNode(circleOfRadius: 8)
-    private var skiNodes: [SKShapeNode] = []
+    /// The skier's sprite — recolored by `applySkin(_:)` via a color blend
+    /// tint (the source art is a single fixed color scheme).
+    private let sprite = SKSpriteNode(texture: SpriteTextureLoader.texture(named: "sprite_skier_1"))
 
     override init() {
         super.init()
@@ -47,45 +47,15 @@ final class SkierNode: SKNode {
         slipIndicator.zPosition = -1
         addChild(slipIndicator)
 
-        // Skis
-        let skiLength: CGFloat = 30
-        for offset in [-8, 8] as [CGFloat] {
-            let ski = SKShapeNode(rectOf: CGSize(width: 5, height: skiLength), cornerRadius: 2)
-            ski.fillColor = .red
-            ski.strokeColor = .clear
-            ski.position = CGPoint(x: offset, y: -Self.height / 2 + 4)
-            bodyContainer.addChild(ski)
-            skiNodes.append(ski)
-        }
+        // Sprite, animated between its 2 pole-push frames for a skiing bob.
+        sprite.size = CGSize(width: 34, height: 34)
+        bodyContainer.addChild(sprite)
 
-        // Legs
-        let legs = SKShapeNode(rectOf: CGSize(width: 16, height: 14), cornerRadius: 3)
-        legs.fillColor = .darkGray
-        legs.strokeColor = .clear
-        legs.position = CGPoint(x: 0, y: -Self.height / 2 + 16)
-        bodyContainer.addChild(legs)
-
-        // Torso
-        torso.fillColor = .systemBlue
-        torso.strokeColor = .clear
-        torso.position = CGPoint(x: 0, y: -2)
-        bodyContainer.addChild(torso)
-
-        // Head
-        head.fillColor = .systemOrange
-        head.strokeColor = .clear
-        head.position = CGPoint(x: 0, y: Self.height / 2 - 10)
-        bodyContainer.addChild(head)
-
-        // Poles
-        for offset in [-16, 16] as [CGFloat] {
-            let pole = SKShapeNode(rectOf: CGSize(width: 3, height: 24))
-            pole.fillColor = .gray
-            pole.strokeColor = .clear
-            pole.position = CGPoint(x: offset, y: 0)
-            pole.zRotation = offset > 0 ? -0.2 : 0.2
-            bodyContainer.addChild(pole)
-        }
+        let frames = [
+            SpriteTextureLoader.texture(named: "sprite_skier_1"),
+            SpriteTextureLoader.texture(named: "sprite_skier_2"),
+        ]
+        sprite.run(.repeatForever(.animate(with: frames, timePerFrame: 0.18)))
     }
 
     private func buildPhysics() {
@@ -185,10 +155,10 @@ final class SkierNode: SKNode {
     /// Recolors the skier to match a cosmetic skin. Purely visual — no
     /// gameplay effect. Safe to call anytime, including on an already-built
     /// skier reused across runs (skins can change between runs via the Locker).
+    /// The source art is a single fixed-color sprite, so this tints it via a
+    /// color blend rather than recoloring separate body-part shapes.
     func applySkin(_ skin: SkierSkin) {
-        // SKColor is UIColor on iOS, so these assign directly.
-        torso.fillColor = skin.jacketColor
-        head.fillColor = skin.headColor
-        skiNodes.forEach { $0.fillColor = skin.skiColor }
+        sprite.color = skin.jacketColor
+        sprite.colorBlendFactor = skin == .classic ? 0 : 0.55
     }
 }

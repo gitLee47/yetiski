@@ -48,25 +48,10 @@ enum SkierSkin: String, CaseIterable, Identifiable, Hashable {
         }
     }
 
-    var headColor: UIColor {
-        switch self {
-        case .classic: return .systemOrange
-        case .blaze: return UIColor(red: 1.0, green: 0.85, blue: 0.2, alpha: 1)
-        case .arctic: return UIColor(red: 0.65, green: 0.85, blue: 1.0, alpha: 1)
-        case .shadow: return UIColor(white: 0.5, alpha: 1)
-        case .royal: return UIColor(red: 0.9, green: 0.75, blue: 0.2, alpha: 1)
-        case .golden: return UIColor(red: 0.98, green: 0.85, blue: 0.4, alpha: 1)
-        }
-    }
-
-    var skiColor: UIColor {
-        switch self {
-        case .classic: return .red
-        case .blaze: return UIColor(red: 0.95, green: 0.5, blue: 0.1, alpha: 1)
-        case .arctic: return UIColor(red: 0.2, green: 0.75, blue: 0.95, alpha: 1)
-        case .shadow: return UIColor(red: 0.55, green: 0.1, blue: 0.15, alpha: 1)
-        case .royal: return UIColor(red: 0.6, green: 0.3, blue: 0.85, alpha: 1)
-        case .golden: return UIColor(red: 0.95, green: 0.75, blue: 0.15, alpha: 1)
-        }
-    }
+    /// Filename (no extension) of the pre-tinted preview sprite shown in the
+    /// Locker — generated offline by applying the exact same blend `SkierNode`
+    /// uses at runtime (`sprite_skier_1` × `jacketColor` at the same 0.55
+    /// factor) to `sprite_skier_1.png`, so the shop card matches in-game
+    /// exactly instead of drifting out of sync with a separately-drawn preview.
+    var previewImageName: String { "sprite_skin_preview_\(rawValue)" }
 }
