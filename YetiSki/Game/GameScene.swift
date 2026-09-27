@@ -242,6 +242,36 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         -playableHalfWidth + laneWidth * (CGFloat(lane) + 0.5)
     }
 
+    /// Inverse of `laneCenterX(_:)` — recovers which lane a hazard is
+    /// sitting in from its x position, so an ice-patch hit can redirect the
+    /// skier toward one without each hazard needing to store its own lane.
+    private func laneIndex(forX x: CGFloat) -> Int {
+        let raw = Int((((x + playableHalfWidth) / laneWidth) - 0.5).rounded())
+        return min(max(raw, 0), laneCount - 1)
+    }
+
+    /// The lane of the hazard (obstacle, rival skier, or live icicle) closest
+    /// to the skier — preferring one still approaching from below, since
+    /// that's the one an ice-patch slip should throw the skier toward.
+    /// Ice patches themselves don't count as a "hazard" to slip into.
+    private func nearestHazardLane() -> Int? {
+        var candidates: [(y: CGFloat, x: CGFloat)] = []
+        for obstacle in obstacles where obstacle.kind != .icePatch {
+            candidates.append((obstacle.position.y, obstacle.position.x))
+        }
+        for snowboarder in snowboarders {
+            candidates.append((snowboarder.position.y, snowboarder.position.x))
+        }
+        for icicle in icicles where icicle.phase != .impacted {
+            candidates.append((icicle.position.y, icicle.position.x))
+        }
+
+        let approaching = candidates.filter { $0.y <= skierY }
+        let pool = approaching.isEmpty ? candidates : approaching
+        guard let nearest = pool.min(by: { abs($0.y - skierY) < abs($1.y - skierY) }) else { return nil }
+        return laneIndex(forX: nearest.x)
+    }
+
     // MARK: - Update loop
 
     override func update(_ currentTime: TimeInterval) {
@@ -551,6 +581,13 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
                     slipTimeRemaining = difficulty.iceSlipDuration
                     skier.setSlipping(true)
                     showFloatingText("Slippery!", color: SKColor(red: 0.0, green: 0.55, blue: 0.95, alpha: 1), at: obstacle.position)
+                    // The actual "losing control" moment: the slip throws the
+                    // skier toward whatever hazard is nearest, rather than
+                    // just quietly making the player's own next tap sluggish.
+                    if let targetLane = nearestHazardLane(), targetLane != currentLane {
+                        currentLane = targetLane
+                        skier.moveTo(x: laneCenterX(currentLane), duration: difficulty.iceSlipMoveDuration)
+                    }
                     return
                 }
                 registerObstacleHit()
