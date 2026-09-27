@@ -8,6 +8,12 @@ enum AppState: Equatable {
     case gameOver
 }
 
+/// Summary shown in a brief toast when a Yeti War ends.
+struct YetiWarResult: Equatable {
+    let kills: Int
+    let bonusCoins: Int
+}
+
 /// Shared observable state bridging the SpriteKit `GameScene` and the SwiftUI views.
 /// `GameScene` writes to this on the main thread as gameplay events happen;
 /// SwiftUI views read from it to render the HUD / menu / game-over screens.
@@ -62,6 +68,32 @@ final class GameViewModel: ObservableObject {
     @Published var selectedSkin: SkierSkin = .classic
     @Published var unlockedSkins: Set<SkierSkin> = [.classic]
 
+    /// Weapons unlocked either by reaching a level (free) or spending Snow
+    /// Coins — unlike skins, these have a real gameplay effect during a
+    /// Yeti War, so they're not purely cosmetic.
+    @Published var selectedWeapon: WeaponKind = .machineGun
+    @Published var unlockedWeapons: Set<WeaponKind> = [.machineGun]
+    /// Set for a moment right after `updateLevel(_:)` auto-unlocks a weapon,
+    /// so `HUDView` can show a "Congrats, unlocked!" banner — consumed the
+    /// same way it already reacts to `level` changing for `LevelUpBanner`.
+    @Published var weaponJustUnlocked: WeaponKind?
+
+    /// True the moment a Yeti War wants to start — `GameContainerView` shows
+    /// the weapon-select banner instead of gameplay while this is set,
+    /// mirroring `isOfferingContinue`.
+    @Published var isYetiWarBannerShown: Bool = false
+    /// Bumped once a weapon's confirmed; `GameContainerView` observes this to
+    /// tell the scene to actually start the war (mirrors `continueRunID`).
+    @Published var yetiWarStartID: Int = 0
+    /// Mirrors war-in-progress state each frame, like `shieldActive`, so the
+    /// HUD can show a countdown + kill count.
+    @Published var yetiWarActive: Bool = false
+    @Published var yetiWarTimeRemaining: TimeInterval = 0
+    @Published var yetiWarKillCount: Int = 0
+    /// Set once when a war ends, for a brief result toast; consumed the same
+    /// way `weaponJustUnlocked` is.
+    @Published var yetiWarResult: YetiWarResult?
+
     private var hasUsedContinueThisRun = false
     private var pendingCaughtByYeti = false
 
@@ -76,6 +108,8 @@ final class GameViewModel: ObservableObject {
         snowCoins = progressStore.snowCoins
         selectedSkin = progressStore.selectedSkin
         unlockedSkins = progressStore.unlockedSkins
+        selectedWeapon = progressStore.selectedWeapon
+        unlockedWeapons = progressStore.unlockedWeapons
         if progressStore.isDailyRewardAvailable {
             let info = progressStore.pendingRewardInfo()
             pendingDailyRewardDay = info.day
@@ -113,6 +147,28 @@ final class GameViewModel: ObservableObject {
         progressStore.selectedSkin = skin
     }
 
+    /// Spends Snow Coins to unlock a weapon, then equips it. No-op if already
+    /// unlocked or unaffordable. Same shape as `purchaseSkin(_:)`.
+    @discardableResult
+    func purchaseWeapon(_ weapon: WeaponKind) -> Bool {
+        guard !unlockedWeapons.contains(weapon), snowCoins >= weapon.coinCost else { return false }
+        snowCoins -= weapon.coinCost
+        unlockedWeapons.insert(weapon)
+        progressStore.snowCoins = snowCoins
+        progressStore.unlockedWeapons = unlockedWeapons
+        HapticsManager.shared.powerup()
+        SoundManager.shared.playPowerup()
+        selectWeapon(weapon)
+        return true
+    }
+
+    /// Equips an already-unlocked weapon.
+    func selectWeapon(_ weapon: WeaponKind) {
+        guard unlockedWeapons.contains(weapon) else { return }
+        selectedWeapon = weapon
+        progressStore.selectedWeapon = weapon
+    }
+
     /// Claims today's login reward, banking its tokens and advancing the streak.
     func claimDailyReward() {
         progressStore.claim()
@@ -135,6 +191,10 @@ final class GameViewModel: ObservableObject {
         speedBoostActive = false
         isOfferingContinue = false
         hasUsedContinueThisRun = false
+        isYetiWarBannerShown = false
+        yetiWarActive = false
+        yetiWarTimeRemaining = 0
+        yetiWarKillCount = 0
         appState = .playing
         runID += 1
     }
@@ -167,6 +227,53 @@ final class GameViewModel: ObservableObject {
         level = newLevel
         HapticsManager.shared.levelUp()
         SoundManager.shared.playLevelUp()
+        checkWeaponLevelUnlocks(newLevel)
+    }
+
+    /// Auto-unlocks (for free) any weapon whose `unlockLevel` this level just
+    /// reached, and flags it for `HUDView`'s "Congrats, unlocked!" banner.
+    private func checkWeaponLevelUnlocks(_ newLevel: Int) {
+        for weapon in WeaponKind.allCases {
+            guard let unlockLevel = weapon.unlockLevel,
+                  newLevel >= unlockLevel,
+                  !unlockedWeapons.contains(weapon)
+            else { continue }
+            unlockedWeapons.insert(weapon)
+            progressStore.unlockedWeapons = unlockedWeapons
+            weaponJustUnlocked = weapon
+            HapticsManager.shared.powerup()
+            SoundManager.shared.playPowerup()
+        }
+    }
+
+    /// Called by `GameScene` when its Yeti War trigger fires — shows the
+    /// weapon-select banner instead of gameplay, mirroring `beginEndOfRun`'s
+    /// role for the continue-offer overlay.
+    func beginYetiWar() {
+        guard appState == .playing else { return }
+        isYetiWarBannerShown = true
+    }
+
+    /// Called when the player confirms a weapon choice on the Yeti War
+    /// banner. Equips the weapon and bumps `yetiWarStartID` so
+    /// `GameContainerView` tells the scene to actually start the war.
+    func confirmYetiWarWeapon(_ weapon: WeaponKind) {
+        guard unlockedWeapons.contains(weapon) else { return }
+        selectWeapon(weapon)
+        isYetiWarBannerShown = false
+        yetiWarStartID += 1
+    }
+
+    /// Called by `GameScene` every frame while a Yeti War is active.
+    func updateYetiWar(active: Bool, timeRemaining: TimeInterval, kills: Int) {
+        yetiWarActive = active
+        yetiWarTimeRemaining = timeRemaining
+        yetiWarKillCount = kills
+    }
+
+    /// Called by `GameScene` once a Yeti War ends, for the result toast.
+    func reportYetiWarResult(kills: Int, bonusCoins: Int) {
+        yetiWarResult = YetiWarResult(kills: kills, bonusCoins: bonusCoins)
     }
 
     /// Called by `GameScene` when the skier takes a hit (stone/hole/tree). Returns

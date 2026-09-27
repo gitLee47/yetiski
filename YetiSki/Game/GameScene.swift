@@ -48,6 +48,22 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
     private var timeSinceLastYeti: TimeInterval = 0
     private var obstacleSpawnTimer: TimeInterval = 0
 
+    // MARK: - Yeti War
+    /// Poll cadence + pity-timer pair for deciding when a war starts, same
+    /// shape as `yetiCheckTimer`/`timeSinceLastYeti` above.
+    private var yetiWarCheckTimer: TimeInterval = 0
+    private var timeSinceLastYetiWar: TimeInterval = 0
+    private var isYetiWarActive = false
+    private var yetiWarTimeRemaining: TimeInterval = 0
+    private var yetiWarTotalDuration: TimeInterval = 0
+    private var yetiWarYetisRemainingToSpawn = 0
+    private var yetiWarSpawnTimer: TimeInterval = 0
+    private var hordeYetis: [YetiNode] = []
+    private var yetiWarKillCount = 0
+    private var bullets: [BulletNode] = []
+    private var bulletFireTimer: TimeInterval = 0
+    private var currentWeapon: WeaponKind = .machineGun
+
     private var distancePoints: CGFloat = 0
     private var currentScore: Int { Int(distancePoints / 10) }
 
@@ -119,6 +135,15 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         skier.setSlipping(false)
         activeYetis.forEach { $0.removeFromParent() }
         activeYetis.removeAll()
+        hordeYetis.forEach { $0.removeFromParent() }
+        hordeYetis.removeAll()
+        bullets.forEach { $0.removeFromParent() }
+        bullets.removeAll()
+        isYetiWarActive = false
+        yetiWarTimeRemaining = 0
+        yetiWarKillCount = 0
+        yetiWarCheckTimer = 0
+        timeSinceLastYetiWar = 0
 
         distancePoints = 0
         elapsedTime = 0
@@ -136,6 +161,7 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         yetiCheckTimer = difficulty.yetiCheckInterval
         timeSinceLastYeti = 0
         yetiSuppressedTimeRemaining = 0
+        yetiWarCheckTimer = difficulty.yetiWarCheckInterval
         lastUpdateTime = nil
         isPlaying = true
 
@@ -161,6 +187,13 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         snowboarders.forEach { $0.removeFromParent() }
         snowboarders.removeAll()
         despawnAllYetis()
+        hordeYetis.forEach { $0.removeFromParent() }
+        hordeYetis.removeAll()
+        bullets.forEach { $0.removeFromParent() }
+        bullets.removeAll()
+        isYetiWarActive = false
+        yetiWarTimeRemaining = 0
+        yetiWarKillCount = 0
 
         currentLane = laneCount / 2
         skier.position = CGPoint(x: laneCenterX(currentLane), y: skierY)
@@ -173,6 +206,23 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         skier.playShield(duration: graceDuration)
         shieldTimeRemaining = graceDuration
 
+        lastUpdateTime = nil
+        isPlaying = true
+        SoundManager.shared.startBackgroundMusic()
+    }
+
+    /// Called by `GameContainerView` once the player confirms a weapon on the
+    /// Yeti War banner — actually starts the horde after `triggerYetiWar()`
+    /// paused everything and handed off to the SwiftUI weapon-select overlay.
+    func beginYetiWar(weapon: WeaponKind) {
+        currentWeapon = weapon
+        isYetiWarActive = true
+        yetiWarTotalDuration = difficulty.yetiWarDuration(atLevel: currentLevel)
+        yetiWarTimeRemaining = yetiWarTotalDuration
+        yetiWarYetisRemainingToSpawn = difficulty.yetiWarHordeCount(atLevel: currentLevel)
+        yetiWarSpawnTimer = 0
+        yetiWarKillCount = 0
+        bulletFireTimer = 0
         lastUpdateTime = nil
         isPlaying = true
         SoundManager.shared.startBackgroundMusic()
@@ -305,12 +355,19 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         viewModel?.updateDistance(currentScore)
 
         scrollBackground(by: travel)
-        advanceObstacles(travel: travel, dt: dt)
-        advanceRamps(travel: travel, dt: dt)
-        advancePickups(travel: travel, dt: dt)
-        advanceIcicles(dt: dt)
-        advanceSnowboarders(travel: travel, dt: dt)
-        advanceYeti(dt: dt)
+
+        if isYetiWarActive {
+            advanceYetiWar(dt: dt)
+        } else {
+            advanceObstacles(travel: travel, dt: dt)
+            advanceRamps(travel: travel, dt: dt)
+            advancePickups(travel: travel, dt: dt)
+            advanceIcicles(dt: dt)
+            advanceSnowboarders(travel: travel, dt: dt)
+            advanceYeti(dt: dt)
+        }
+        advanceYetiWarTrigger(dt: dt)
+        viewModel?.updateYetiWar(active: isYetiWarActive, timeRemaining: yetiWarTimeRemaining, kills: yetiWarKillCount)
     }
 
     // MARK: - Obstacles
@@ -548,6 +605,205 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         activeYetis.removeAll()
     }
 
+    // MARK: - Yeti War
+
+    /// Decides whether a Yeti War should start this frame — same poll-cadence
+    /// + pity-timer shape as `advanceYetiAmbushScheduling`, just for a much
+    /// bigger, rarer event.
+    private func advanceYetiWarTrigger(dt: TimeInterval) {
+        guard !isYetiWarActive, currentLevel >= difficulty.yetiWarMinLevel else { return }
+
+        yetiWarCheckTimer -= dt
+        timeSinceLastYetiWar += dt
+        let mustTrigger = timeSinceLastYetiWar >= difficulty.maxTimeBetweenYetiWars(atLevel: currentLevel)
+        guard yetiWarCheckTimer <= 0 || mustTrigger else { return }
+        yetiWarCheckTimer = difficulty.yetiWarCheckInterval
+
+        guard mustTrigger || Double.random(in: 0..<1) < difficulty.yetiWarProbability(atLevel: currentLevel) else { return }
+        triggerYetiWar()
+    }
+
+    /// Clears the slope and hands off to the SwiftUI weapon-select banner
+    /// (`GameViewModel.beginYetiWar()`) — `beginYetiWar(weapon:)` above is
+    /// what actually resumes play once a weapon's chosen.
+    private func triggerYetiWar() {
+        despawnAllYetis()
+        obstacles.forEach { $0.removeFromParent() }
+        obstacles.removeAll()
+        ramps.forEach { $0.removeFromParent() }
+        ramps.removeAll()
+        pickups.forEach { $0.removeFromParent() }
+        pickups.removeAll()
+        icicles.forEach { $0.removeFromParent() }
+        icicles.removeAll()
+        snowboarders.forEach { $0.removeFromParent() }
+        snowboarders.removeAll()
+
+        timeSinceLastYetiWar = 0
+        isPlaying = false
+        SoundManager.shared.stopBackgroundMusic()
+        viewModel?.beginYetiWar()
+    }
+
+    /// Drives an active war: horde spawn pacing, horde/bullet movement, and
+    /// the equipped weapon's auto-fire. Called from `update(_:)` instead of
+    /// the normal hazard `advance*` calls while `isYetiWarActive`.
+    private func advanceYetiWar(dt: TimeInterval) {
+        yetiWarTimeRemaining -= dt
+        if yetiWarTimeRemaining <= 0 {
+            endYetiWar()
+            return
+        }
+
+        advanceYetiWarSpawning(dt: dt)
+        advanceYetiWarBullets(dt: dt)
+        advanceHordeYetis(dt: dt)
+    }
+
+    private func advanceYetiWarSpawning(dt: TimeInterval) {
+        guard yetiWarYetisRemainingToSpawn > 0 else { return }
+        yetiWarSpawnTimer -= dt
+        guard yetiWarSpawnTimer <= 0 else { return }
+
+        // Occasionally land a whole row across several lanes at once instead
+        // of always a single yeti — reads as a wave hitting the slope.
+        let isRowSpawn = Double.random(in: 0..<1) < difficulty.yetiWarRowSpawnProbability
+        let rowSize = isRowSpawn ? Int.random(in: difficulty.yetiWarRowSpawnRange) : 1
+        let spawnCount = min(rowSize, yetiWarYetisRemainingToSpawn, laneCount)
+
+        var usedLanes: Set<Int> = []
+        for _ in 0..<spawnCount {
+            var lane = Int.random(in: 0..<laneCount)
+            while usedLanes.contains(lane) {
+                lane = Int.random(in: 0..<laneCount)
+            }
+            usedLanes.insert(lane)
+
+            let yeti = YetiNode()
+            yeti.position = CGPoint(x: laneCenterX(lane), y: -size.height / 2 - 90)
+            yeti.zPosition = 8
+            // A minority actively chase the skier's lane instead of walking
+            // straight up, so the horde isn't purely a passive shooting
+            // gallery — a few of them genuinely come at you.
+            if Double.random(in: 0..<1) < difficulty.yetiWarChaserProbability(atLevel: currentLevel) {
+                yeti.chasesSkier = true
+                yeti.turnSpeed = difficulty.yetiWarChaserTurnSpeed(atLevel: currentLevel)
+            }
+            addChild(yeti)
+            hordeYetis.append(yeti)
+        }
+        yetiWarYetisRemainingToSpawn -= spawnCount
+
+        // Pace the remaining spawns evenly across whatever's left of the war.
+        let remainingSlots = max(1, yetiWarYetisRemainingToSpawn)
+        yetiWarSpawnTimer = max(0.3, yetiWarTimeRemaining / TimeInterval(remainingSlots + 1))
+    }
+
+    private func advanceYetiWarBullets(dt: TimeInterval) {
+        bulletFireTimer -= dt
+        if bulletFireTimer <= 0 {
+            fireBullet()
+            bulletFireTimer = difficulty.weaponFireInterval
+        }
+
+        // Bullets travel toward negative y — new terrain (and the horde)
+        // always scrolls in from the bottom of the screen, so that's
+        // "downhill, ahead of the skier," not up toward where things have
+        // already passed.
+        let despawnY = -size.height / 2 - 40
+        for bullet in bullets {
+            bullet.position.y -= difficulty.bulletSpeed * CGFloat(dt)
+        }
+        let (remaining, despawned) = bullets.partitioned { $0.position.y < despawnY }
+        despawned.forEach { $0.removeFromParent() }
+        bullets = remaining
+    }
+
+    private func fireBullet() {
+        let bullet = BulletNode()
+        bullet.position = CGPoint(x: skier.position.x, y: skier.position.y - 20)
+        bullet.zPosition = 7
+        addChild(bullet)
+        bullets.append(bullet)
+    }
+
+    /// Most horde yetis walk straight up their spawn lane — deliberately not
+    /// homing toward the skier like a normal ambush, so they read as fair
+    /// shooting-gallery targets — but a minority (`chasesSkier`, rolled at
+    /// spawn) actively home in, so the horde isn't purely passive.
+    private func advanceHordeYetis(dt: TimeInterval) {
+        let speed = difficulty.totalScrollSpeed(atDistance: currentScore, level: currentLevel)
+            + difficulty.yetiWarYetiSpeed(atLevel: currentLevel)
+        let despawnY = size.height / 2 + 80
+        for yeti in hordeYetis {
+            yeti.position.y += speed * CGFloat(dt)
+            if yeti.chasesSkier {
+                yeti.stepHoming(towardX: skier.position.x, deltaTime: dt)
+            }
+        }
+        let (remaining, despawned) = hordeYetis.partitioned { $0.position.y > despawnY }
+        despawned.forEach { $0.removeFromParent() }
+        hordeYetis = remaining
+    }
+
+    private func endYetiWar() {
+        isYetiWarActive = false
+        hordeYetis.forEach { $0.removeFromParent() }
+        hordeYetis.removeAll()
+        bullets.forEach { $0.removeFromParent() }
+        bullets.removeAll()
+
+        let bonus = yetiWarKillCount * difficulty.yetiWarClearBonusPerKill
+        if bonus > 0 {
+            viewModel?.addSnowCoins(bonus)
+        }
+        viewModel?.reportYetiWarResult(kills: yetiWarKillCount, bonusCoins: bonus)
+        yetiWarKillCount = 0
+
+        // Re-prime the normal spawn timers so hazards don't all fire at once
+        // the instant normal play resumes.
+        obstacleSpawnTimer = difficulty.obstacleSpawnInterval(atLevel: currentLevel)
+        rampSpawnTimer = difficulty.rampSpawnInterval(atLevel: currentLevel)
+        pickupSpawnTimer = difficulty.pickupSpawnInterval(atLevel: currentLevel)
+        icicleSpawnTimer = difficulty.icicleSpawnInterval(atLevel: currentLevel)
+        snowboarderSpawnTimer = difficulty.snowboarderSpawnInterval(atLevel: currentLevel)
+        yetiCheckTimer = difficulty.yetiCheckInterval
+        timeSinceLastYeti = 0
+    }
+
+    @discardableResult
+    private func removeHordeYeti(from contact: SKPhysicsContact) -> YetiNode? {
+        for node in [contact.bodyA.node, contact.bodyB.node] {
+            if let yeti = node as? YetiNode, let index = hordeYetis.firstIndex(where: { $0 === yeti }) {
+                yeti.removeFromParent()
+                hordeYetis.remove(at: index)
+                return yeti
+            }
+        }
+        return nil
+    }
+
+    @discardableResult
+    private func removeBullet(from contact: SKPhysicsContact) -> BulletNode? {
+        for node in [contact.bodyA.node, contact.bodyB.node] {
+            if let bullet = node as? BulletNode {
+                bullet.removeFromParent()
+                bullets.removeAll { $0 === bullet }
+                return bullet
+            }
+        }
+        return nil
+    }
+
+    private func handleBulletContact(_ contact: SKPhysicsContact) {
+        guard removeBullet(from: contact) != nil else { return }
+        guard let hordeYeti = removeHordeYeti(from: contact) else { return }
+        yetiWarKillCount += 1
+        distancePoints += difficulty.yetiWarKillDistanceBonus
+        viewModel?.addSnowCoins(difficulty.yetiWarKillCoinBonus)
+        showFloatingText("+1", color: SKColor(red: 1.0, green: 0.85, blue: 0.3, alpha: 1), at: hordeYeti.position)
+    }
+
     // MARK: - Collisions
 
     func didBegin(_ contact: SKPhysicsContact) {
@@ -565,9 +821,22 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
             handlePickupContact(contact)
             return
         }
+        // Bullets always register too — shooting down a horde yeti shouldn't
+        // depend on the skier's own invincibility state.
+        if categories & PhysicsCategory.bullet != 0 {
+            handleBulletContact(contact)
+            return
+        }
         guard !skier.isInvincible else { return }
 
         if categories & PhysicsCategory.yeti != 0 {
+            // A Yeti War horde member costs a life, like an obstacle, rather
+            // than ending the run outright — only a normal single/dual
+            // ambush yeti is an instant catch.
+            if removeHordeYeti(from: contact) != nil {
+                registerObstacleHit()
+                return
+            }
             despawnAllYetis()
             isPlaying = false
             SoundManager.shared.stopBackgroundMusic()

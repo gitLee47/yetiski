@@ -11,6 +11,8 @@ final class PlayerProgressStore {
     private let snowCoinsKey = "com.lijulee.yetiski.snowCoins"
     private let unlockedSkinsKey = "com.lijulee.yetiski.unlockedSkins"
     private let selectedSkinKey = "com.lijulee.yetiski.selectedSkin"
+    private let unlockedWeaponsKey = "com.lijulee.yetiski.unlockedWeapons"
+    private let selectedWeaponKey = "com.lijulee.yetiski.selectedWeapon"
     private let weeklyBestKey = "com.lijulee.yetiski.weeklyBestDistance"
     private let weeklyPeriodKey = "com.lijulee.yetiski.weeklyPeriodID"
 
@@ -44,6 +46,27 @@ final class PlayerProgressStore {
             return skin
         }
         set { defaults.set(newValue.rawValue, forKey: selectedSkinKey) }
+    }
+
+    /// Always includes `.machineGun` even before anything's been explicitly
+    /// unlocked, since it's the free starting weapon.
+    var unlockedWeapons: Set<WeaponKind> {
+        get {
+            let rawValues = defaults.stringArray(forKey: unlockedWeaponsKey) ?? []
+            let weapons = Set(rawValues.compactMap(WeaponKind.init(rawValue:)))
+            return weapons.isEmpty ? [.machineGun] : weapons
+        }
+        set { defaults.set(Array(newValue).map(\.rawValue), forKey: unlockedWeaponsKey) }
+    }
+
+    var selectedWeapon: WeaponKind {
+        get {
+            guard let raw = defaults.string(forKey: selectedWeaponKey), let weapon = WeaponKind(rawValue: raw) else {
+                return .machineGun
+            }
+            return weapon
+        }
+        set { defaults.set(newValue.rawValue, forKey: selectedWeaponKey) }
     }
 
     var reviveTokens: Int {
