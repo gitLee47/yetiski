@@ -81,8 +81,11 @@ final class SkierNode: SKNode {
     }
 
     /// Slides the skier to a new x position with a quick easing animation and a
-    /// slight lean, then updates the physics body.
-    func moveTo(x: CGFloat, duration: TimeInterval = 0.16) {
+    /// slight lean, then updates the physics body. No default for `duration` —
+    /// both call sites (normal steer vs. ice-slip steer) pass a value from
+    /// `DifficultyManager` deliberately, so a silently-wrong default can't
+    /// drift out of sync with the tuning that actually governs steering feel.
+    func moveTo(x: CGFloat, duration: TimeInterval) {
         removeAction(forKey: "move")
         let lean: CGFloat = x > position.x ? -0.18 : (x < position.x ? 0.18 : 0)
         let move = SKAction.moveTo(x: x, duration: duration)

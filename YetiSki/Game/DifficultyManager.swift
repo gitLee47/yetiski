@@ -88,9 +88,11 @@ struct DifficultyManager {
         return base - (base - floor) * t
     }
 
+    /// `moveTo` duration for a normal lane-steer — quick and snappy.
+    let normalSteerDuration: TimeInterval = 0.16
     /// How long an ice-patch hit makes steering sluggish for.
     let iceSlipDuration: TimeInterval = 2.5
-    /// `moveTo` duration used while slipping, vs. the normal 0.16s.
+    /// `moveTo` duration used while slipping, vs. `normalSteerDuration`.
     let iceSlipMoveDuration: TimeInterval = 0.4
 
     /// Chance per spawn-check tick (see `GameScene`'s yeti timer) that a yeti
