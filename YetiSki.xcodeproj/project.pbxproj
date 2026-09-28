@@ -121,7 +121,7 @@
 		9CB647824C3B08507F76FD2A /* DailyRewardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyRewardView.swift; sourceTree = "<group>"; };
 		9FB64CBC21F8AB15D167BB0E /* SkierNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkierNode.swift; sourceTree = "<group>"; };
 		A07C6D0E05CE6C5D68B6348C /* sprite_rival_skier_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_rival_skier_2.png; sourceTree = "<group>"; };
-		A63DFCD0EB9B2879E8165B21 /* YetiSki.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = YetiSki.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A63DFCD0EB9B2879E8165B21 /* YetiSki.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YetiSki.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9E91A21589E331E8C13777A /* sprite_ice_patch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_ice_patch.png; sourceTree = "<group>"; };
 		B018DC928B1B9CE93674151E /* sprite_yeti_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_yeti_1.png; sourceTree = "<group>"; };
 		B10F8981358549F87D70A632 /* GameCenterManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCenterManager.swift; sourceTree = "<group>"; };
@@ -339,7 +339,6 @@
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					08A3AA305EE24BC9C20E8BAD = {
-						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -514,6 +513,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = YetiSki/YetiSki.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = B69F6WJQ9N;
 				INFOPLIST_FILE = YetiSki/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -533,6 +533,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = YetiSki/YetiSki.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = B69F6WJQ9N;
 				INFOPLIST_FILE = YetiSki/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (

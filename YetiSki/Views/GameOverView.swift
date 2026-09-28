@@ -124,9 +124,7 @@ struct GameOverView: View {
         renderer.scale = UIScreen.main.scale
         guard let uiImage = renderer.uiImage, let data = uiImage.pngData() else { return }
 
-        if let previousURL = shareImageURL {
-            try? FileManager.default.removeItem(at: previousURL)
-        }
+        cleanUpPreviousShareCards()
 
         let url = FileManager.default.temporaryDirectory.appendingPathComponent("yetiski_share_\(UUID().uuidString).png")
         do {
@@ -134,6 +132,20 @@ struct GameOverView: View {
             shareImageURL = url
         } catch {
             shareImageURL = nil
+        }
+    }
+
+    /// Sweeps the temp directory for every prior `yetiski_share_*.png`, not
+    /// just the one this instance's own `shareImageURL` happens to know
+    /// about. `GameOverView` is instantiated fresh (new `@State`) on every
+    /// death, so a single previous-URL check would never actually delete
+    /// anything across separate runs — the files would silently pile up in
+    /// the temp directory for the life of the app process.
+    private func cleanUpPreviousShareCards() {
+        let tempDir = FileManager.default.temporaryDirectory
+        guard let files = try? FileManager.default.contentsOfDirectory(at: tempDir, includingPropertiesForKeys: nil) else { return }
+        for file in files where file.lastPathComponent.hasPrefix("yetiski_share_") {
+            try? FileManager.default.removeItem(at: file)
         }
     }
 }

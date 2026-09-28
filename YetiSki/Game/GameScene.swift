@@ -62,6 +62,11 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
     private var yetiWarKillCount = 0
     private var bullets: [BulletNode] = []
     private var bulletFireTimer: TimeInterval = 0
+    /// Not yet read anywhere — every `WeaponKind` fires identically today
+    /// (see its doc comment). Kept as forward-looking state so a future pass
+    /// giving weapons distinct behavior has something to switch on in
+    /// `fireBullet()`/`advanceYetiWarBullets` without re-threading the choice
+    /// through from `beginYetiWar(weapon:)` again.
     private var currentWeapon: WeaponKind = .machineGun
 
     private var distancePoints: CGFloat = 0
@@ -283,7 +288,7 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         let newLane = min(max(currentLane + delta, 0), laneCount - 1)
         guard newLane != currentLane else { return }
         currentLane = newLane
-        let duration = slipTimeRemaining > 0 ? difficulty.iceSlipMoveDuration : 0.16
+        let duration = slipTimeRemaining > 0 ? difficulty.iceSlipMoveDuration : difficulty.normalSteerDuration
         skier.moveTo(x: laneCenterX(currentLane), duration: duration)
         HapticsManager.shared.laneChange()
     }
@@ -640,8 +645,7 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         snowboarders.removeAll()
 
         timeSinceLastYetiWar = 0
-        isPlaying = false
-        SoundManager.shared.stopBackgroundMusic()
+        stopRun()
         viewModel?.beginYetiWar()
     }
 
@@ -838,8 +842,7 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
                 return
             }
             despawnAllYetis()
-            isPlaying = false
-            SoundManager.shared.stopBackgroundMusic()
+            stopRun()
             viewModel?.registerYetiCatch()
             return
         }
@@ -875,8 +878,7 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         skier.playHitFlash()
         let ended = viewModel?.registerHit() ?? false
         if ended {
-            isPlaying = false
-            SoundManager.shared.stopBackgroundMusic()
+            stopRun()
         }
     }
 

@@ -3,7 +3,7 @@ import AVFoundation
 /// Plays background music and one-shot sound effects.
 ///
 /// Drop the real audio files into `YetiSki/Resources/Sounds` using the filenames
-/// referenced below (e.g. `swoosh.caf`, `crash.caf`, `yeti_roar.caf`, `game_over.caf`,
+/// referenced below (e.g. `crash.caf`, `yeti_roar.caf`, `game_over.caf`,
 /// `music_loop.mp3`). Until those files exist, every call here is a safe no-op —
 /// missing audio never crashes or blocks gameplay.
 final class SoundManager {
@@ -40,7 +40,6 @@ final class SoundManager {
         musicPlayer?.play()
     }
 
-    func playSwoosh() { play("swoosh") }
     func playHit() { play("crash") }
     func playYetiRoar() { play("yeti_roar") }
     func playGameOver() { play("game_over") }

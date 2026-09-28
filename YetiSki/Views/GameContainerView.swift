@@ -18,7 +18,14 @@ struct GameContainerView: View {
                 SpriteView(scene: scene)
                     .ignoresSafeArea()
 
+                // .id(runID) forces SwiftUI to tear down and recreate HUDView
+                // (resetting its local banner @State) on every fresh/restarted
+                // run, so a banner mid-display at the moment of a restart
+                // can't carry over into the new run. Deliberately NOT keyed to
+                // continueRunID — a continue keeps the rest of run state in
+                // place, so an in-flight banner naturally finishing out is fine.
                 HUDView()
+                    .id(viewModel.runID)
 
                 if viewModel.appState == .gameOver {
                     GameOverView()
