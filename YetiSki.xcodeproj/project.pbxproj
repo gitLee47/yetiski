@@ -30,7 +30,9 @@
 		5399388966997F0F9C702385 /* SnowboarderNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B3C7B452C4AACCDE4544E31 /* SnowboarderNode.swift */; };
 		587ED84DCFAD66A9D7E15D5A /* sprite_skier_1.png in Resources */ = {isa = PBXBuildFile; fileRef = 4EFCA9B3835A91668F6B48E8 /* sprite_skier_1.png */; };
 		620D2800C01160C2FC5D2A25 /* sprite_rival_skier_2.png in Resources */ = {isa = PBXBuildFile; fileRef = A07C6D0E05CE6C5D68B6348C /* sprite_rival_skier_2.png */; };
+		65848387A9A768835C4D6083 /* sprite_weapon_wyrmsBreath.png in Resources */ = {isa = PBXBuildFile; fileRef = 7B2BEF211D86B45C59F3CEC1 /* sprite_weapon_wyrmsBreath.png */; };
 		682EBEF8C323DBD7A676B57E /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6FA727E03974E033E8B1940 /* GameScene.swift */; };
+		6ECE9BABEC3B64F5E789B54B /* sprite_weapon_acidSprayer.png in Resources */ = {isa = PBXBuildFile; fileRef = 133188AECFBD8D7D65A5DEF4 /* sprite_weapon_acidSprayer.png */; };
 		761320784D46AC329B4005FB /* ContinueOfferView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF693B6BF4311543EC2BDBC /* ContinueOfferView.swift */; };
 		7C8696241297146507F51A9F /* sprite_skin_preview_blaze.png in Resources */ = {isa = PBXBuildFile; fileRef = E01F44F734214D80A77C3EB0 /* sprite_skin_preview_blaze.png */; };
 		7DCFBEDBBCF7A3F149F523E2 /* YetiWarWeaponSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AF6EA3801C767EB90EA4D0E /* YetiWarWeaponSelectView.swift */; };
@@ -51,7 +53,11 @@
 		A70D7AC09026848ACC26DB3F /* sprite_rock.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C781F9DE9A1F1D323C1758D /* sprite_rock.png */; };
 		A81E358497E7B1646E983250 /* sprite_skin_preview_classic.png in Resources */ = {isa = PBXBuildFile; fileRef = 820036C5F918384DA9E1B098 /* sprite_skin_preview_classic.png */; };
 		A888A5771A66F1ED443AA330 /* PhysicsCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0683599C70BEC47B7EBB43 /* PhysicsCategory.swift */; };
+		ABA0014CB0D4D209AD34F863 /* sprite_weapon_feralClaws.png in Resources */ = {isa = PBXBuildFile; fileRef = E50651B498F99F5C1BD320E5 /* sprite_weapon_feralClaws.png */; };
 		AC4EA1A5854105EEAF054BD5 /* sprite_skin_preview_shadow.png in Resources */ = {isa = PBXBuildFile; fileRef = B3658FA7DA1172C410BE1046 /* sprite_skin_preview_shadow.png */; };
+		B049400F18A00B7F45885916 /* sprite_weapon_gravityPulse.png in Resources */ = {isa = PBXBuildFile; fileRef = 57782A0C962EE5C3D1A9969B /* sprite_weapon_gravityPulse.png */; };
+		B163D8B351F2F9F5B53EE21A /* CoinBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF6569B1E41AB7C5E12DD201 /* CoinBundle.swift */; };
+		B230412CF3A74F2953CF1BBD /* sprite_weapon_opticBlast.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD2D1177ACAAC805B56A91 /* sprite_weapon_opticBlast.png */; };
 		B35955CB545E6EC3FDC49C81 /* sprite_weapon_iceCannon.png in Resources */ = {isa = PBXBuildFile; fileRef = CDB0C575F2D2CCAFAC74CF13 /* sprite_weapon_iceCannon.png */; };
 		B741A31FAFBE60B2168C5303 /* sprite_ramp.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A1624D2AFDEB2F2F11E930B /* sprite_ramp.png */; };
 		BC70E21A44A6D6F68FA7B818 /* sprite_pickup_speed.png in Resources */ = {isa = PBXBuildFile; fileRef = 1933249A5D54A18A0B701154 /* sprite_pickup_speed.png */; };
@@ -60,6 +66,7 @@
 		C66097489BE08FF478EA7373 /* SPRITES_README.md in Resources */ = {isa = PBXBuildFile; fileRef = 2D73976EE8A0753980542330 /* SPRITES_README.md */; };
 		CCC398A88113DB6B917B1711 /* RampNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508CC28C61F9ED237E7819BB /* RampNode.swift */; };
 		CD9F31646E6230BAD1575BD1 /* sprite_weapon_rocketLauncher.png in Resources */ = {isa = PBXBuildFile; fileRef = 0E697E8868F6B4E53FA220F5 /* sprite_weapon_rocketLauncher.png */; };
+		CEE459B20C3A68C36975DF24 /* sprite_weapon_pulseBlade.png in Resources */ = {isa = PBXBuildFile; fileRef = 799B1753A78691B749B9CBC7 /* sprite_weapon_pulseBlade.png */; };
 		CF4D01FE54EC707AA8796CA8 /* sprite_pickup_shield.png in Resources */ = {isa = PBXBuildFile; fileRef = 0253A0C08DDA9560157AA02D /* sprite_pickup_shield.png */; };
 		DB7CA174659FFCB6D196E150 /* HUDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31785C1B5564A00DDDBDF4B5 /* HUDView.swift */; };
 		E20C8D49E45D7B645BB51199 /* sprite_weapon_shotgun.png in Resources */ = {isa = PBXBuildFile; fileRef = F1E635B95A16F4D5A8DA00FD /* sprite_weapon_shotgun.png */; };
@@ -69,6 +76,7 @@
 		E8BF0FA6CFF28D39938D87EE /* SkierNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FB64CBC21F8AB15D167BB0E /* SkierNode.swift */; };
 		ECF6142889A9D7621E6B4983 /* sprite_hole.png in Resources */ = {isa = PBXBuildFile; fileRef = 44EF770DF6DEC580DD5BE8D6 /* sprite_hole.png */; };
 		F5D0125A45C6B17710C541FF /* YetiNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 417BF4E1FA4161355DC4BE41 /* YetiNode.swift */; };
+		F856396E96A53B6C00E336A7 /* CoinShopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 364FD7B0CDECE106EE9613BD /* CoinShopView.swift */; };
 		FA08B5FE89082CBF5118F7AC /* SkierSkin.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE335401B14F09B7EC0BD5E3 /* SkierSkin.swift */; };
 		FB718ABCAFB8F1D756FD5E81 /* sprite_pickup_snowflake.png in Resources */ = {isa = PBXBuildFile; fileRef = CBC1B02B7A722D78D8D4E058 /* sprite_pickup_snowflake.png */; };
 		FF84718BF7EFBDC20E2D6A4B /* sprite_skier_2.png in Resources */ = {isa = PBXBuildFile; fileRef = B76E30DF6A3F7BA37E986713 /* sprite_skier_2.png */; };
@@ -81,6 +89,7 @@
 		0C48F30FA5535558B5449EC2 /* sprite_skin_preview_golden.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_skin_preview_golden.png; sourceTree = "<group>"; };
 		0E697E8868F6B4E53FA220F5 /* sprite_weapon_rocketLauncher.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_weapon_rocketLauncher.png; sourceTree = "<group>"; };
 		0F6DD26F963A10BC6D40186E /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
+		133188AECFBD8D7D65A5DEF4 /* sprite_weapon_acidSprayer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_weapon_acidSprayer.png; sourceTree = "<group>"; };
 		173F453B0E349B3C8119CF35 /* sprite_icicle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_icicle.png; sourceTree = "<group>"; };
 		1933249A5D54A18A0B701154 /* sprite_pickup_speed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_pickup_speed.png; sourceTree = "<group>"; };
 		1C43F1DFCEC9C8CCF68A4DD3 /* GameOverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOverView.swift; sourceTree = "<group>"; };
@@ -92,6 +101,7 @@
 		2DEBB06D6183DB5AD09F638D /* SpriteTextureLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpriteTextureLoader.swift; sourceTree = "<group>"; };
 		31785C1B5564A00DDDBDF4B5 /* HUDView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HUDView.swift; sourceTree = "<group>"; };
 		352F0BD10382947B6E637EDC /* HapticsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticsManager.swift; sourceTree = "<group>"; };
+		364FD7B0CDECE106EE9613BD /* CoinShopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinShopView.swift; sourceTree = "<group>"; };
 		3C781F9DE9A1F1D323C1758D /* sprite_rock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_rock.png; sourceTree = "<group>"; };
 		3C7EB1512B8466E4789A10A1 /* sprite_tree.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_tree.png; sourceTree = "<group>"; };
 		417BF4E1FA4161355DC4BE41 /* YetiNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YetiNode.swift; sourceTree = "<group>"; };
@@ -103,6 +113,7 @@
 		4EFCA9B3835A91668F6B48E8 /* sprite_skier_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_skier_1.png; sourceTree = "<group>"; };
 		508CC28C61F9ED237E7819BB /* RampNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RampNode.swift; sourceTree = "<group>"; };
 		53A645019C233AC9CC117EE5 /* WeaponKind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeaponKind.swift; sourceTree = "<group>"; };
+		57782A0C962EE5C3D1A9969B /* sprite_weapon_gravityPulse.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_weapon_gravityPulse.png; sourceTree = "<group>"; };
 		59993584587C7845BAB3B25D /* GameContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameContainerView.swift; sourceTree = "<group>"; };
 		5C2515A26A49931ED49EBE69 /* IcicleNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IcicleNode.swift; sourceTree = "<group>"; };
 		5C6894268E7CDB5B93201B77 /* YetiSkiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YetiSkiApp.swift; sourceTree = "<group>"; };
@@ -110,7 +121,9 @@
 		68F1DBBCAD7057EF3B18DA6A /* PickupNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickupNode.swift; sourceTree = "<group>"; };
 		6B2DB54B174E82E30417FA53 /* sprite_yeti_3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_yeti_3.png; sourceTree = "<group>"; };
 		6C7C41E355ACE1EBCBE3B7DA /* SkinShopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkinShopView.swift; sourceTree = "<group>"; };
+		799B1753A78691B749B9CBC7 /* sprite_weapon_pulseBlade.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_weapon_pulseBlade.png; sourceTree = "<group>"; };
 		79DA86D0EA4EF397FDF95811 /* sprite_skin_preview_royal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_skin_preview_royal.png; sourceTree = "<group>"; };
+		7B2BEF211D86B45C59F3CEC1 /* sprite_weapon_wyrmsBreath.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_weapon_wyrmsBreath.png; sourceTree = "<group>"; };
 		820036C5F918384DA9E1B098 /* sprite_skin_preview_classic.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_skin_preview_classic.png; sourceTree = "<group>"; };
 		859EE74B003D1F6CE0D8A37B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		886AA86B779C883686A7D3D0 /* PlayerProgressStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerProgressStore.swift; sourceTree = "<group>"; };
@@ -121,7 +134,7 @@
 		9CB647824C3B08507F76FD2A /* DailyRewardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyRewardView.swift; sourceTree = "<group>"; };
 		9FB64CBC21F8AB15D167BB0E /* SkierNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkierNode.swift; sourceTree = "<group>"; };
 		A07C6D0E05CE6C5D68B6348C /* sprite_rival_skier_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_rival_skier_2.png; sourceTree = "<group>"; };
-		A63DFCD0EB9B2879E8165B21 /* YetiSki.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YetiSki.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A63DFCD0EB9B2879E8165B21 /* YetiSki.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = YetiSki.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9E91A21589E331E8C13777A /* sprite_ice_patch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_ice_patch.png; sourceTree = "<group>"; };
 		B018DC928B1B9CE93674151E /* sprite_yeti_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_yeti_1.png; sourceTree = "<group>"; };
 		B10F8981358549F87D70A632 /* GameCenterManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCenterManager.swift; sourceTree = "<group>"; };
@@ -136,10 +149,13 @@
 		D98CD766EC08CB62FF0F5D56 /* sprite_weapon_machineGun.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_weapon_machineGun.png; sourceTree = "<group>"; };
 		DA9FA86FE7FEE3BD9570FCEB /* sprite_yeti_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_yeti_2.png; sourceTree = "<group>"; };
 		DAC36302B3EFE6FB8A4BD391 /* HighScoreStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighScoreStore.swift; sourceTree = "<group>"; };
+		DF6569B1E41AB7C5E12DD201 /* CoinBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinBundle.swift; sourceTree = "<group>"; };
 		E01F44F734214D80A77C3EB0 /* sprite_skin_preview_blaze.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_skin_preview_blaze.png; sourceTree = "<group>"; };
 		E2BFE754FFDD9F49D0F39A56 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		E50651B498F99F5C1BD320E5 /* sprite_weapon_feralClaws.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_weapon_feralClaws.png; sourceTree = "<group>"; };
 		E6FA727E03974E033E8B1940 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		E7A12B46936D013026B4383A /* ScoreCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreCardView.swift; sourceTree = "<group>"; };
+		E9CD2D1177ACAAC805B56A91 /* sprite_weapon_opticBlast.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_weapon_opticBlast.png; sourceTree = "<group>"; };
 		F1E635B95A16F4D5A8DA00FD /* sprite_weapon_shotgun.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_weapon_shotgun.png; sourceTree = "<group>"; };
 		FE0E6BE2B715587FE850C3B4 /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
 		FF4A6D0EF7D675719140280E /* YetiSki.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = YetiSki.entitlements; sourceTree = "<group>"; };
@@ -179,10 +195,16 @@
 				79DA86D0EA4EF397FDF95811 /* sprite_skin_preview_royal.png */,
 				B3658FA7DA1172C410BE1046 /* sprite_skin_preview_shadow.png */,
 				3C7EB1512B8466E4789A10A1 /* sprite_tree.png */,
+				133188AECFBD8D7D65A5DEF4 /* sprite_weapon_acidSprayer.png */,
+				E50651B498F99F5C1BD320E5 /* sprite_weapon_feralClaws.png */,
+				57782A0C962EE5C3D1A9969B /* sprite_weapon_gravityPulse.png */,
 				CDB0C575F2D2CCAFAC74CF13 /* sprite_weapon_iceCannon.png */,
 				D98CD766EC08CB62FF0F5D56 /* sprite_weapon_machineGun.png */,
+				E9CD2D1177ACAAC805B56A91 /* sprite_weapon_opticBlast.png */,
+				799B1753A78691B749B9CBC7 /* sprite_weapon_pulseBlade.png */,
 				0E697E8868F6B4E53FA220F5 /* sprite_weapon_rocketLauncher.png */,
 				F1E635B95A16F4D5A8DA00FD /* sprite_weapon_shotgun.png */,
+				7B2BEF211D86B45C59F3CEC1 /* sprite_weapon_wyrmsBreath.png */,
 				B018DC928B1B9CE93674151E /* sprite_yeti_1.png */,
 				DA9FA86FE7FEE3BD9570FCEB /* sprite_yeti_2.png */,
 				6B2DB54B174E82E30417FA53 /* sprite_yeti_3.png */,
@@ -203,6 +225,7 @@
 		5547E0C148B38B9CEA6C30A0 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				364FD7B0CDECE106EE9613BD /* CoinShopView.swift */,
 				5FF693B6BF4311543EC2BDBC /* ContinueOfferView.swift */,
 				9CB647824C3B08507F76FD2A /* DailyRewardView.swift */,
 				59993584587C7845BAB3B25D /* GameContainerView.swift */,
@@ -231,6 +254,7 @@
 			isa = PBXGroup;
 			children = (
 				9B9A260F06E3A9ED2B28C8E0 /* BulletNode.swift */,
+				DF6569B1E41AB7C5E12DD201 /* CoinBundle.swift */,
 				2ADA52F4C1E4A5D4C74601EE /* DifficultyManager.swift */,
 				E6FA727E03974E033E8B1940 /* GameScene.swift */,
 				5C2515A26A49931ED49EBE69 /* IcicleNode.swift */,
@@ -339,6 +363,7 @@
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					08A3AA305EE24BC9C20E8BAD = {
+						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -392,10 +417,16 @@
 				A079C2A7D01DFD5F9F1934A4 /* sprite_skin_preview_royal.png in Resources */,
 				AC4EA1A5854105EEAF054BD5 /* sprite_skin_preview_shadow.png in Resources */,
 				9E130BC5BF00D2958A03C328 /* sprite_tree.png in Resources */,
+				6ECE9BABEC3B64F5E789B54B /* sprite_weapon_acidSprayer.png in Resources */,
+				ABA0014CB0D4D209AD34F863 /* sprite_weapon_feralClaws.png in Resources */,
+				B049400F18A00B7F45885916 /* sprite_weapon_gravityPulse.png in Resources */,
 				B35955CB545E6EC3FDC49C81 /* sprite_weapon_iceCannon.png in Resources */,
 				4623CE74774345B7C269894C /* sprite_weapon_machineGun.png in Resources */,
+				B230412CF3A74F2953CF1BBD /* sprite_weapon_opticBlast.png in Resources */,
+				CEE459B20C3A68C36975DF24 /* sprite_weapon_pulseBlade.png in Resources */,
 				CD9F31646E6230BAD1575BD1 /* sprite_weapon_rocketLauncher.png in Resources */,
 				E20C8D49E45D7B645BB51199 /* sprite_weapon_shotgun.png in Resources */,
+				65848387A9A768835C4D6083 /* sprite_weapon_wyrmsBreath.png in Resources */,
 				11B679252B4EF81C9C904074 /* sprite_yeti_1.png in Resources */,
 				E88F7C072339159EA51FE48A /* sprite_yeti_2.png in Resources */,
 				18E59D1353D4A9E4927E0C9E /* sprite_yeti_3.png in Resources */,
@@ -410,6 +441,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				938C8738D59D4387B09D7136 /* BulletNode.swift in Sources */,
+				B163D8B351F2F9F5B53EE21A /* CoinBundle.swift in Sources */,
+				F856396E96A53B6C00E336A7 /* CoinShopView.swift in Sources */,
 				761320784D46AC329B4005FB /* ContinueOfferView.swift in Sources */,
 				3D8BEC078532BF1C269DB6A5 /* DailyRewardView.swift in Sources */,
 				14F64AF53AB75D756FBB97BF /* DifficultyManager.swift in Sources */,
@@ -513,7 +546,6 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = YetiSki/YetiSki.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = B69F6WJQ9N;
 				INFOPLIST_FILE = YetiSki/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -533,7 +565,6 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = YetiSki/YetiSki.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = B69F6WJQ9N;
 				INFOPLIST_FILE = YetiSki/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (

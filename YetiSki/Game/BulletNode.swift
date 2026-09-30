@@ -5,6 +5,8 @@ import SpriteKit
 /// mutating `position.y` directly each frame, the same way `advanceObstacles`
 /// moves `ObstacleNode`s, rather than the node animating itself.
 final class BulletNode: SKNode {
+    private let sprite = SKSpriteNode(texture: SpriteTextureLoader.texture(named: "sprite_bullet"))
+
     override init() {
         super.init()
         buildVisuals()
@@ -16,7 +18,6 @@ final class BulletNode: SKNode {
     }
 
     private func buildVisuals() {
-        let sprite = SKSpriteNode(texture: SpriteTextureLoader.texture(named: "sprite_bullet"))
         sprite.size = CGSize(width: 10, height: 18)
         addChild(sprite)
     }
@@ -29,5 +30,19 @@ final class BulletNode: SKNode {
         body.contactTestBitMask = PhysicsCategory.yeti
         body.collisionBitMask = PhysicsCategory.none
         physicsBody = body
+    }
+
+    /// Restyles the shared bullet sprite per-weapon (bigger/redder for a
+    /// Rocket Launcher's heavy shot, tall/cyan for Ice Cannon's beam-like
+    /// shot, etc.) via a color-blend tint — the same technique
+    /// `SkierNode.applySkin` uses to recolor its one base sprite, so no new
+    /// bullet art is needed per weapon.
+    func applyStyle(scaleX: CGFloat = 1, scaleY: CGFloat = 1, tint: SKColor? = nil) {
+        sprite.xScale = scaleX
+        sprite.yScale = scaleY
+        if let tint {
+            sprite.color = tint
+            sprite.colorBlendFactor = 0.75
+        }
     }
 }

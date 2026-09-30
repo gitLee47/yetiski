@@ -125,6 +125,17 @@ final class GameViewModel: ObservableObject {
         progressStore.snowCoins = snowCoins
     }
 
+    /// Called once a (placeholder, for now) coin-bundle purchase completes —
+    /// see `CoinBundle`'s doc comment. Swap in a real StoreKit 2
+    /// transaction-completion callback here when ready to monetize for
+    /// real; the game-side effect (credit the coins) is identical either
+    /// way, same pattern as `useAdRevive()`.
+    func purchaseCoinBundle(_ bundle: CoinBundle) {
+        addSnowCoins(bundle.coinAmount)
+        HapticsManager.shared.powerup()
+        SoundManager.shared.playPowerup()
+    }
+
     /// Spends Snow Coins to unlock a skin, then equips it. No-op if already
     /// unlocked or unaffordable.
     @discardableResult
