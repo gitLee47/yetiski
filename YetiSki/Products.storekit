@@ -1,0 +1,76 @@
+{
+  "identifier" : "0195F000-0000-0000-0000-000000000001",
+  "nonRenewingSubscriptions" : [],
+  "products" : [
+    {
+      "displayPrice" : "1.99",
+      "familyShareable" : false,
+      "internalID" : "0195F000-0001-0000-0000-000000000001",
+      "localizations" : [
+        {
+          "description" : "A small handful of Snow Coins.",
+          "displayName" : "Snowball",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.lijulee.yetiski.coins.small",
+      "referenceName" : "Snowball (200 coins)",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "6.99",
+      "familyShareable" : false,
+      "internalID" : "0195F000-0001-0000-0000-000000000002",
+      "localizations" : [
+        {
+          "description" : "A decent pile of Snow Coins.",
+          "displayName" : "Snow Pile",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.lijulee.yetiski.coins.medium",
+      "referenceName" : "Snow Pile (900 coins)",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "10.99",
+      "familyShareable" : false,
+      "internalID" : "0195F000-0001-0000-0000-000000000003",
+      "localizations" : [
+        {
+          "description" : "A big drift of Snow Coins. Best value.",
+          "displayName" : "Snowdrift",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.lijulee.yetiski.coins.large",
+      "referenceName" : "Snowdrift (1500 coins)",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "19.99",
+      "familyShareable" : false,
+      "internalID" : "0195F000-0001-0000-0000-000000000004",
+      "localizations" : [
+        {
+          "description" : "An avalanche of Snow Coins.",
+          "displayName" : "Avalanche",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.lijulee.yetiski.coins.mega",
+      "referenceName" : "Avalanche (3000 coins)",
+      "type" : "Consumable"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "0",
+    "_developerTeamID" : "0",
+    "_lastSynchronizedDate" : 0
+  },
+  "subscriptionGroups" : [],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}

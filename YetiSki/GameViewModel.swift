@@ -125,11 +125,9 @@ final class GameViewModel: ObservableObject {
         progressStore.snowCoins = snowCoins
     }
 
-    /// Called once a (placeholder, for now) coin-bundle purchase completes —
-    /// see `CoinBundle`'s doc comment. Swap in a real StoreKit 2
-    /// transaction-completion callback here when ready to monetize for
-    /// real; the game-side effect (credit the coins) is identical either
-    /// way, same pattern as `useAdRevive()`.
+    /// Called by `CoinShopView` once `StoreManager.purchase(_:)` reports a
+    /// real, verified StoreKit transaction completed — never call this
+    /// speculatively before that succeeds.
     func purchaseCoinBundle(_ bundle: CoinBundle) {
         addSnowCoins(bundle.coinAmount)
         HapticsManager.shared.powerup()

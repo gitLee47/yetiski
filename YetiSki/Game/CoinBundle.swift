@@ -1,11 +1,10 @@
 import Foundation
 
-/// A real-money Snow Coin bundle — a placeholder for real StoreKit 2
-/// products (see `GameViewModel.purchaseCoinBundle(_:)` and
-/// `CoinShopView.simulatePurchase(_:)`, which mirror `ContinueOfferView`'s
-/// "fake it until App Store Connect is set up" pattern for the ad-revive
-/// flow). No real payment is processed until this is wired to actual
-/// StoreKit products under the developer account.
+/// A real-money Snow Coin bundle. Purchased for real via StoreKit 2 — see
+/// `StoreManager`, `productID` below, and `YetiSki/Products.storekit` (the
+/// local test product catalog used by the simulator/Debug builds until real
+/// App Store Connect products exist for Release/TestFlight — see
+/// `StoreManager`'s doc comment for the swap-over).
 ///
 /// Sizes are deliberately anchored to `WeaponKind`'s coin costs rather than
 /// picked arbitrarily, so the currency and the weapon ladder read as one
@@ -26,6 +25,10 @@ enum CoinBundle: String, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
+    /// Must match a consumable product identifier configured in App Store
+    /// Connect (and in `Products.storekit` for local testing).
+    var productID: String { "com.lijulee.yetiski.coins.\(rawValue)" }
+
     var displayName: String {
         switch self {
         case .small: return "Snowball"
@@ -44,10 +47,12 @@ enum CoinBundle: String, CaseIterable, Identifiable {
         }
     }
 
-    /// Display-only placeholder price — real pricing comes from StoreKit's
-    /// own localized product price once real IAP products exist; this
-    /// never reaches a payment processor. Per-coin price strictly improves
-    /// small -> mega (≈1.0¢, 0.78¢, 0.73¢, 0.67¢ per coin).
+    /// Fallback price shown only if `StoreManager`'s real StoreKit product
+    /// hasn't loaded yet (e.g. no network) — prefer `Product.displayPrice`
+    /// whenever it's available, since real pricing (with tax/region
+    /// formatting) comes from StoreKit itself. These nominal values match
+    /// what's configured in `Products.storekit`. Per-coin price strictly
+    /// improves small -> mega (≈1.0¢, 0.78¢, 0.73¢, 0.67¢ per coin).
     var priceLabel: String {
         switch self {
         case .small: return "$1.99"

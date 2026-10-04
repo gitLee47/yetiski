@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!--
+	This file covers YetiSki's own first-party code only. Third-party SDKs
+	(Google Mobile Ads, Google User Messaging Platform) ship their own
+	PrivacyInfo.xcprivacy inside their SPM packages, which Xcode aggregates
+	automatically at archive time — nothing to duplicate here for them.
+	-->
+
+	<!-- YetiSki's own first-party code makes no tracking network calls and
+	     never touches the IDFA itself — ATT is requested by, and all actual
+	     tracking happens inside, the Google Mobile Ads SDK, which ships its
+	     own PrivacyInfo.xcprivacy declaring NSPrivacyTracking: true plus its
+	     real tracking domains. Apple's validator requires NSPrivacyTracking
+	     and a non-empty NSPrivacyTrackingDomains to move together within a
+	     single manifest, so this file (first-party only) stays false/empty
+	     rather than guessing at Google's domains on their behalf. -->
+	<key>NSPrivacyTracking</key>
+	<false/>
+
+	<key>NSPrivacyTrackingDomains</key>
+	<array/>
+
+	<!-- YetiSki does not itself collect or transmit any data to a server it
+	     controls — Snow Coins, skins, weapon unlocks, and best distance are
+	     all stored locally (UserDefaults) or via Apple's own Game Center. -->
+	<key>NSPrivacyCollectedDataTypes</key>
+	<array/>
+
+	<!-- Required-reason APIs used by YetiSki's own code. -->
+	<key>NSPrivacyAccessedAPITypes</key>
+	<array>
+		<dict>
+			<!-- PlayerProgressStore / HighScoreStore persist local progress
+			     and settings via UserDefaults. -->
+			<key>NSPrivacyAccessedAPIType</key>
+			<string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+			<key>NSPrivacyAccessedAPITypeReasons</key>
+			<array>
+				<string>CA92.1</string>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>

@@ -27,13 +27,18 @@
 		3D8BEC078532BF1C269DB6A5 /* DailyRewardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CB647824C3B08507F76FD2A /* DailyRewardView.swift */; };
 		4623CE74774345B7C269894C /* sprite_weapon_machineGun.png in Resources */ = {isa = PBXBuildFile; fileRef = D98CD766EC08CB62FF0F5D56 /* sprite_weapon_machineGun.png */; };
 		4753BBFD7DED43C15D9D4C28 /* sprite_skin_preview_golden.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C48F30FA5535558B5449EC2 /* sprite_skin_preview_golden.png */; };
+		47C33AB4BB7A7B819A5F19EE /* StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5487CCE739B2600961C991EB /* StoreManager.swift */; };
 		5399388966997F0F9C702385 /* SnowboarderNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B3C7B452C4AACCDE4544E31 /* SnowboarderNode.swift */; };
 		587ED84DCFAD66A9D7E15D5A /* sprite_skier_1.png in Resources */ = {isa = PBXBuildFile; fileRef = 4EFCA9B3835A91668F6B48E8 /* sprite_skier_1.png */; };
+		5F5A90D76904CDC74D1E51EB /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = E3D30BCEB9D015FB138A2B2D /* GoogleMobileAds */; };
 		620D2800C01160C2FC5D2A25 /* sprite_rival_skier_2.png in Resources */ = {isa = PBXBuildFile; fileRef = A07C6D0E05CE6C5D68B6348C /* sprite_rival_skier_2.png */; };
 		65848387A9A768835C4D6083 /* sprite_weapon_wyrmsBreath.png in Resources */ = {isa = PBXBuildFile; fileRef = 7B2BEF211D86B45C59F3CEC1 /* sprite_weapon_wyrmsBreath.png */; };
+		664C09CDF8238F02A3953C49 /* AdManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E579C217F05F4E8280375E8 /* AdManager.swift */; };
 		682EBEF8C323DBD7A676B57E /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6FA727E03974E033E8B1940 /* GameScene.swift */; };
+		6A5105314970ED23B382DF10 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = B41872BE891AC738962EBAA7 /* PrivacyInfo.xcprivacy */; };
 		6ECE9BABEC3B64F5E789B54B /* sprite_weapon_acidSprayer.png in Resources */ = {isa = PBXBuildFile; fileRef = 133188AECFBD8D7D65A5DEF4 /* sprite_weapon_acidSprayer.png */; };
 		761320784D46AC329B4005FB /* ContinueOfferView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF693B6BF4311543EC2BDBC /* ContinueOfferView.swift */; };
+		7BE6F0E6237DFB7F230D6768 /* Products.storekit in Resources */ = {isa = PBXBuildFile; fileRef = D5175C05B45EEAEDFC0584FF /* Products.storekit */; };
 		7C8696241297146507F51A9F /* sprite_skin_preview_blaze.png in Resources */ = {isa = PBXBuildFile; fileRef = E01F44F734214D80A77C3EB0 /* sprite_skin_preview_blaze.png */; };
 		7DCFBEDBBCF7A3F149F523E2 /* YetiWarWeaponSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AF6EA3801C767EB90EA4D0E /* YetiWarWeaponSelectView.swift */; };
 		7F0F5B1829BEFBB7E320DBEB /* sprite_pickup_life.png in Resources */ = {isa = PBXBuildFile; fileRef = BAFDFC78BD895F6EC50D9CA6 /* sprite_pickup_life.png */; };
@@ -99,6 +104,7 @@
 		2D3A8E2406AA1CE3A3496B56 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2D73976EE8A0753980542330 /* SPRITES_README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = SPRITES_README.md; sourceTree = "<group>"; };
 		2DEBB06D6183DB5AD09F638D /* SpriteTextureLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpriteTextureLoader.swift; sourceTree = "<group>"; };
+		2E579C217F05F4E8280375E8 /* AdManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdManager.swift; sourceTree = "<group>"; };
 		31785C1B5564A00DDDBDF4B5 /* HUDView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HUDView.swift; sourceTree = "<group>"; };
 		352F0BD10382947B6E637EDC /* HapticsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticsManager.swift; sourceTree = "<group>"; };
 		364FD7B0CDECE106EE9613BD /* CoinShopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinShopView.swift; sourceTree = "<group>"; };
@@ -113,6 +119,7 @@
 		4EFCA9B3835A91668F6B48E8 /* sprite_skier_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_skier_1.png; sourceTree = "<group>"; };
 		508CC28C61F9ED237E7819BB /* RampNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RampNode.swift; sourceTree = "<group>"; };
 		53A645019C233AC9CC117EE5 /* WeaponKind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeaponKind.swift; sourceTree = "<group>"; };
+		5487CCE739B2600961C991EB /* StoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreManager.swift; sourceTree = "<group>"; };
 		57782A0C962EE5C3D1A9969B /* sprite_weapon_gravityPulse.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_weapon_gravityPulse.png; sourceTree = "<group>"; };
 		59993584587C7845BAB3B25D /* GameContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameContainerView.swift; sourceTree = "<group>"; };
 		5C2515A26A49931ED49EBE69 /* IcicleNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IcicleNode.swift; sourceTree = "<group>"; };
@@ -139,6 +146,7 @@
 		B018DC928B1B9CE93674151E /* sprite_yeti_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_yeti_1.png; sourceTree = "<group>"; };
 		B10F8981358549F87D70A632 /* GameCenterManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCenterManager.swift; sourceTree = "<group>"; };
 		B3658FA7DA1172C410BE1046 /* sprite_skin_preview_shadow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_skin_preview_shadow.png; sourceTree = "<group>"; };
+		B41872BE891AC738962EBAA7 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		B52013736727DB33C2633D07 /* ObstacleNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObstacleNode.swift; sourceTree = "<group>"; };
 		B76E30DF6A3F7BA37E986713 /* sprite_skier_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_skier_2.png; sourceTree = "<group>"; };
 		BAFDFC78BD895F6EC50D9CA6 /* sprite_pickup_life.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_pickup_life.png; sourceTree = "<group>"; };
@@ -146,6 +154,7 @@
 		CBC1B02B7A722D78D8D4E058 /* sprite_pickup_snowflake.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_pickup_snowflake.png; sourceTree = "<group>"; };
 		CDB0C575F2D2CCAFAC74CF13 /* sprite_weapon_iceCannon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_weapon_iceCannon.png; sourceTree = "<group>"; };
 		CEAB453E90EFD9E31E59197E /* sprite_bullet.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_bullet.png; sourceTree = "<group>"; };
+		D5175C05B45EEAEDFC0584FF /* Products.storekit */ = {isa = PBXFileReference; path = Products.storekit; sourceTree = "<group>"; };
 		D98CD766EC08CB62FF0F5D56 /* sprite_weapon_machineGun.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_weapon_machineGun.png; sourceTree = "<group>"; };
 		DA9FA86FE7FEE3BD9570FCEB /* sprite_yeti_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_yeti_2.png; sourceTree = "<group>"; };
 		DAC36302B3EFE6FB8A4BD391 /* HighScoreStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighScoreStore.swift; sourceTree = "<group>"; };
@@ -160,6 +169,17 @@
 		FE0E6BE2B715587FE850C3B4 /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
 		FF4A6D0EF7D675719140280E /* YetiSki.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = YetiSki.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1E9AE93F61A4797EE59B0D67 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5F5A90D76904CDC74D1E51EB /* GoogleMobileAds in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		150DD1B71928497E5EE98B50 /* Products */ = {
@@ -250,6 +270,14 @@
 			path = Audio;
 			sourceTree = "<group>";
 		};
+		8D8A18CC4A6280CC689622E3 /* Ad */ = {
+			isa = PBXGroup;
+			children = (
+				2E579C217F05F4E8280375E8 /* AdManager.swift */,
+			);
+			path = Ad;
+			sourceTree = "<group>";
+		};
 		AC9DB21FE0423D89487AC502 /* Game */ = {
 			isa = PBXGroup;
 			children = (
@@ -266,6 +294,7 @@
 				BE335401B14F09B7EC0BD5E3 /* SkierSkin.swift */,
 				8B3C7B452C4AACCDE4544E31 /* SnowboarderNode.swift */,
 				2DEBB06D6183DB5AD09F638D /* SpriteTextureLoader.swift */,
+				5487CCE739B2600961C991EB /* StoreManager.swift */,
 				53A645019C233AC9CC117EE5 /* WeaponKind.swift */,
 				417BF4E1FA4161355DC4BE41 /* YetiNode.swift */,
 			);
@@ -295,8 +324,11 @@
 				2D3A8E2406AA1CE3A3496B56 /* Assets.xcassets */,
 				FE0E6BE2B715587FE850C3B4 /* GameViewModel.swift */,
 				859EE74B003D1F6CE0D8A37B /* Info.plist */,
+				B41872BE891AC738962EBAA7 /* PrivacyInfo.xcprivacy */,
+				D5175C05B45EEAEDFC0584FF /* Products.storekit */,
 				FF4A6D0EF7D675719140280E /* YetiSki.entitlements */,
 				5C6894268E7CDB5B93201B77 /* YetiSkiApp.swift */,
+				8D8A18CC4A6280CC689622E3 /* Ad */,
 				6D6ABDC94952018A4BB2D030 /* Audio */,
 				AC9DB21FE0423D89487AC502 /* Game */,
 				D6671283B586AE249FB79F0C /* GameCenter */,
@@ -341,6 +373,7 @@
 			buildPhases = (
 				A5FEB958BA7DA318D1C20381 /* Sources */,
 				A9CBFF7EEF1E2072FBED5CA1 /* Resources */,
+				1E9AE93F61A4797EE59B0D67 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -348,6 +381,7 @@
 			);
 			name = YetiSki;
 			packageProductDependencies = (
+				E3D30BCEB9D015FB138A2B2D /* GoogleMobileAds */,
 			);
 			productName = YetiSki;
 			productReference = A63DFCD0EB9B2879E8165B21 /* YetiSki.app */;
@@ -363,7 +397,7 @@
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					08A3AA305EE24BC9C20E8BAD = {
-						DevelopmentTeam = "";
+						DevelopmentTeam = B69F6WJQ9N;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -377,6 +411,9 @@
 			);
 			mainGroup = CE475C20A65B990520B0C7C8;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				12F16F313481A092E07D73B8 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 150DD1B71928497E5EE98B50 /* Products */;
 			projectDirPath = "";
@@ -393,6 +430,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				239DFBFA9BCEF8CD9D2DCB97 /* Assets.xcassets in Resources */,
+				6A5105314970ED23B382DF10 /* PrivacyInfo.xcprivacy in Resources */,
+				7BE6F0E6237DFB7F230D6768 /* Products.storekit in Resources */,
 				9AA8F335632A1C3E501B8896 /* README.md in Resources */,
 				C66097489BE08FF478EA7373 /* SPRITES_README.md in Resources */,
 				0E78A3B7B0F4576C431DB215 /* sprite_bullet.png in Resources */,
@@ -440,6 +479,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				664C09CDF8238F02A3953C49 /* AdManager.swift in Sources */,
 				938C8738D59D4387B09D7136 /* BulletNode.swift in Sources */,
 				B163D8B351F2F9F5B53EE21A /* CoinBundle.swift in Sources */,
 				F856396E96A53B6C00E336A7 /* CoinShopView.swift in Sources */,
@@ -471,6 +511,7 @@
 				5399388966997F0F9C702385 /* SnowboarderNode.swift in Sources */,
 				E22C709A3E3B7C7D8844269D /* SoundManager.swift in Sources */,
 				8399B3DDCC80E3F1C1CA0B11 /* SpriteTextureLoader.swift in Sources */,
+				47C33AB4BB7A7B819A5F19EE /* StoreManager.swift in Sources */,
 				2B15B4E15B2BF455ABB4E247 /* WeaponKind.swift in Sources */,
 				F5D0125A45C6B17710C541FF /* YetiNode.swift in Sources */,
 				9E208BD3A3980AC8050FB453 /* YetiSkiApp.swift in Sources */,
@@ -516,8 +557,9 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = B69F6WJQ9N;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -529,6 +571,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -612,8 +655,9 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = B69F6WJQ9N;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -631,6 +675,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -664,6 +709,25 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		12F16F313481A092E07D73B8 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.13.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E3D30BCEB9D015FB138A2B2D /* GoogleMobileAds */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 12F16F313481A092E07D73B8 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
+			productName = GoogleMobileAds;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 63345E2358C3F67E2F8BBD55 /* Project object */;
 }

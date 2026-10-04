@@ -1,14 +1,13 @@
 import SwiftUI
+import StoreKit
 
 /// Lets the player buy Snow Coins with real money — presented as a sheet
-/// from the Locker. A placeholder for real StoreKit 2 purchases (see
-/// `CoinBundle`'s doc comment and `GameViewModel.purchaseCoinBundle(_:)`);
-/// `simulatePurchase(_:)` fakes a brief checkout delay then "succeeds",
-/// exactly like `ContinueOfferView.simulateAd()` fakes a rewarded ad. No
-/// real payment is processed until this is wired to actual StoreKit
-/// products under the developer account.
+/// from the Locker. Purchases go through real StoreKit 2 (`StoreManager`);
+/// see its doc comment for the local-testing setup (`Products.storekit`)
+/// and what's needed for this to work in production.
 struct CoinShopView: View {
     @EnvironmentObject var viewModel: GameViewModel
+    @ObservedObject private var storeManager = StoreManager.shared
     let onClose: () -> Void
     @State private var purchasingBundle: CoinBundle?
 
@@ -40,8 +39,8 @@ struct CoinShopView: View {
                 } else {
                     VStack(spacing: 12) {
                         ForEach(CoinBundle.allCases) { bundle in
-                            CoinBundleRow(bundle: bundle) {
-                                simulatePurchase(bundle)
+                            CoinBundleRow(bundle: bundle, priceLabel: priceLabel(for: bundle)) {
+                                purchase(bundle)
                             }
                         }
                     }
@@ -49,13 +48,15 @@ struct CoinShopView: View {
                 }
 
                 Spacer()
-
-                Text("Placeholder store — no real payment is processed yet.")
-                    .font(.caption2)
-                    .foregroundStyle(.white.opacity(0.4))
-                    .padding(.bottom, 12)
             }
         }
+    }
+
+    /// Prefers the real, localized StoreKit price once the product's
+    /// loaded; falls back to `CoinBundle.priceLabel`'s nominal placeholder
+    /// if it hasn't (e.g. no network yet).
+    private func priceLabel(for bundle: CoinBundle) -> String {
+        storeManager.products.first(where: { $0.id == bundle.productID })?.displayPrice ?? bundle.priceLabel
     }
 
     private func purchasingOverlay(for bundle: CoinBundle) -> some View {
@@ -69,13 +70,16 @@ struct CoinShopView: View {
         .frame(maxWidth: .infinity, minHeight: 160)
     }
 
-    /// Placeholder for a real StoreKit 2 purchase sheet + transaction.
-    /// Simulates a brief checkout delay, then credits the coins exactly as
-    /// a real purchase's completion callback would.
-    private func simulatePurchase(_ bundle: CoinBundle) {
+    /// Runs a real StoreKit 2 purchase via `StoreManager`; only credits
+    /// coins (`GameViewModel.purchaseCoinBundle(_:)`) once it actually
+    /// succeeds — a cancelled/pending/failed purchase credits nothing.
+    private func purchase(_ bundle: CoinBundle) {
         purchasingBundle = bundle
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.4) {
-            viewModel.purchaseCoinBundle(bundle)
+        Task {
+            let success = await storeManager.purchase(bundle)
+            if success {
+                viewModel.purchaseCoinBundle(bundle)
+            }
             purchasingBundle = nil
         }
     }
@@ -83,6 +87,7 @@ struct CoinShopView: View {
 
 private struct CoinBundleRow: View {
     let bundle: CoinBundle
+    let priceLabel: String
     let onBuy: () -> Void
 
     var body: some View {
@@ -96,7 +101,7 @@ private struct CoinBundleRow: View {
                         .foregroundStyle(.cyan)
                 }
                 Spacer()
-                Text(bundle.priceLabel)
+                Text(priceLabel)
                     .font(.headline.bold())
             }
             .padding(14)

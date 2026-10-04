@@ -1,11 +1,11 @@
 import SwiftUI
+import UIKit
 
 /// Shown once per run, right when the skier would otherwise be game-over —
 /// offers a revive via a banked token or a rewarded ad, before falling
-/// through to the real Game Over screen. The "ad" here is a placeholder
-/// simulation (a brief loading spinner); swap `simulateAd`'s body for a real
-/// rewarded-ad SDK call (e.g. Google AdMob) once that's set up — everything
-/// downstream (`GameViewModel.useAdRevive()`) already works either way.
+/// through to the real Game Over screen. The ad is a real Google AdMob
+/// rewarded ad via `AdManager` — see its doc comment for the test-vs-real
+/// ad unit setup.
 struct ContinueOfferView: View {
     @EnvironmentObject var viewModel: GameViewModel
     @State private var secondsRemaining = 5
@@ -54,7 +54,7 @@ struct ContinueOfferView: View {
                 .disabled(viewModel.reviveTokens <= 0)
 
                 Button {
-                    simulateAd()
+                    watchAd()
                 } label: {
                     Label("Watch Ad — Free Continue", systemImage: "play.rectangle.fill")
                         .font(.headline)
@@ -88,14 +88,25 @@ struct ContinueOfferView: View {
         }
     }
 
-    /// Placeholder for a real rewarded-ad SDK call. Simulates a short ad
-    /// break, then grants the continue exactly as a real ad's completion
-    /// callback would.
-    private func simulateAd() {
+    /// Presents a real AdMob rewarded ad. Grants the continue only if the
+    /// reward was actually earned (ad watched to completion) — a failed
+    /// load, an early dismiss, or no root view controller all leave the
+    /// player on this offer screen so they can retry, use a token, or
+    /// decline instead.
+    private func watchAd() {
         isShowingAd = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.2) {
+        guard let rootViewController = UIApplication.shared.connectedScenes
+            .compactMap({ ($0 as? UIWindowScene)?.keyWindow?.rootViewController })
+            .first
+        else {
             isShowingAd = false
-            viewModel.useAdRevive()
+            return
+        }
+        AdManager.shared.showRewardedAd(from: rootViewController) { earned in
+            isShowingAd = false
+            if earned {
+                viewModel.useAdRevive()
+            }
         }
     }
 }
