@@ -29,14 +29,18 @@ struct YetiWarWeaponSelectView: View {
                     .font(.headline.bold())
                     .foregroundStyle(.cyan)
 
-                LazyVGrid(columns: columns, spacing: 14) {
-                    ForEach(WeaponKind.allCases) { weapon in
-                        WeaponChoiceCard(weapon: weapon, isSelected: selection == weapon) {
-                            selection = weapon
+                // Scrolls — 10 weapons (5 rows) no longer fit in a fixed
+                // VStack alongside the header and button on one screen.
+                ScrollView {
+                    LazyVGrid(columns: columns, spacing: 14) {
+                        ForEach(WeaponKind.allCases) { weapon in
+                            WeaponChoiceCard(weapon: weapon, isSelected: selection == weapon) {
+                                selection = weapon
+                            }
                         }
                     }
+                    .padding(.horizontal, 24)
                 }
-                .padding(.horizontal, 24)
 
                 Button {
                     viewModel.confirmYetiWarWeapon(selection)

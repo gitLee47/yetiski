@@ -125,6 +125,15 @@ final class GameViewModel: ObservableObject {
         progressStore.snowCoins = snowCoins
     }
 
+    /// Called by `CoinShopView` once `StoreManager.purchase(_:)` reports a
+    /// real, verified StoreKit transaction completed — never call this
+    /// speculatively before that succeeds.
+    func purchaseCoinBundle(_ bundle: CoinBundle) {
+        addSnowCoins(bundle.coinAmount)
+        HapticsManager.shared.powerup()
+        SoundManager.shared.playPowerup()
+    }
+
     /// Spends Snow Coins to unlock a skin, then equips it. No-op if already
     /// unlocked or unaffordable.
     @discardableResult

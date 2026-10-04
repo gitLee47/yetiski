@@ -10,6 +10,7 @@ import SwiftUI
 struct SkinShopView: View {
     @EnvironmentObject var viewModel: GameViewModel
     let onClose: () -> Void
+    @State private var showCoinShop = false
 
     private let columns = [GridItem(.flexible()), GridItem(.flexible())]
 
@@ -23,9 +24,17 @@ struct SkinShopView: View {
                         .font(.title2.bold())
                         .foregroundStyle(.white)
                     Spacer()
-                    Label("\(viewModel.snowCoins)", systemImage: "snowflake")
-                        .font(.headline.bold())
+                    Button {
+                        showCoinShop = true
+                    } label: {
+                        HStack(spacing: 4) {
+                            Label("\(viewModel.snowCoins)", systemImage: "snowflake")
+                                .font(.headline.bold())
+                            Image(systemName: "plus.circle.fill")
+                                .font(.subheadline.bold())
+                        }
                         .foregroundStyle(.cyan)
+                    }
                     Button(action: onClose) {
                         Image(systemName: "xmark.circle.fill")
                             .font(.title2)
@@ -55,6 +64,10 @@ struct SkinShopView: View {
                     .padding(.horizontal)
                     .padding(.bottom, 24)
                 }
+            }
+
+            if showCoinShop {
+                CoinShopView(onClose: { showCoinShop = false })
             }
         }
     }

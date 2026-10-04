@@ -304,10 +304,4 @@ struct DifficultyManager {
     /// Extra Snow Coins per kill, paid out as one lump sum when the war ends
     /// — on top of the per-kill bonus above, rewarding a full clear.
     let yetiWarClearBonusPerKill = 2
-
-    /// Bullet travel speed (points/second) and the shared auto-fire interval
-    /// — every `WeaponKind` fires at this same rate for now (see its doc
-    /// comment); only name/icon/unlock path differ until a future pass.
-    let bulletSpeed: CGFloat = 900
-    let weaponFireInterval: TimeInterval = 0.35
 }

@@ -61,12 +61,11 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
     private var hordeYetis: [YetiNode] = []
     private var yetiWarKillCount = 0
     private var bullets: [BulletNode] = []
-    private var bulletFireTimer: TimeInterval = 0
-    /// Not yet read anywhere — every `WeaponKind` fires identically today
-    /// (see its doc comment). Kept as forward-looking state so a future pass
-    /// giving weapons distinct behavior has something to switch on in
-    /// `fireBullet()`/`advanceYetiWarBullets` without re-threading the choice
-    /// through from `beginYetiWar(weapon:)` again.
+    /// Counts down to the next weapon activation — gates any `activateWeapon()`
+    /// call, not just literal bullets (melee/hitscan/pulse etc. use it too).
+    private var weaponCooldownTimer: TimeInterval = 0
+    /// Lingering Acid Sprayer impact zones: `(lane, secondsRemaining, visual)`.
+    private var acidZones: [(lane: Int, timeRemaining: TimeInterval, visual: SKShapeNode)] = []
     private var currentWeapon: WeaponKind = .machineGun
 
     private var distancePoints: CGFloat = 0
@@ -144,6 +143,8 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         hordeYetis.removeAll()
         bullets.forEach { $0.removeFromParent() }
         bullets.removeAll()
+        acidZones.forEach { $0.visual.removeFromParent() }
+        acidZones.removeAll()
         isYetiWarActive = false
         yetiWarTimeRemaining = 0
         yetiWarKillCount = 0
@@ -196,6 +197,8 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         hordeYetis.removeAll()
         bullets.forEach { $0.removeFromParent() }
         bullets.removeAll()
+        acidZones.forEach { $0.visual.removeFromParent() }
+        acidZones.removeAll()
         isYetiWarActive = false
         yetiWarTimeRemaining = 0
         yetiWarKillCount = 0
@@ -227,7 +230,7 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         yetiWarYetisRemainingToSpawn = difficulty.yetiWarHordeCount(atLevel: currentLevel)
         yetiWarSpawnTimer = 0
         yetiWarKillCount = 0
-        bulletFireTimer = 0
+        weaponCooldownTimer = 0
         lastUpdateTime = nil
         isPlaying = true
         SoundManager.shared.startBackgroundMusic()
@@ -660,7 +663,7 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         }
 
         advanceYetiWarSpawning(dt: dt)
-        advanceYetiWarBullets(dt: dt)
+        advanceYetiWarWeapon(dt: dt)
         advanceHordeYetis(dt: dt)
     }
 
@@ -703,32 +706,168 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         yetiWarSpawnTimer = max(0.3, yetiWarTimeRemaining / TimeInterval(remainingSlots + 1))
     }
 
-    private func advanceYetiWarBullets(dt: TimeInterval) {
-        bulletFireTimer -= dt
-        if bulletFireTimer <= 0 {
-            fireBullet()
-            bulletFireTimer = difficulty.weaponFireInterval
+    /// Ticks the equipped weapon's cooldown (skipped entirely for
+    /// `.passiveMelee`, which never actively fires — see `didBegin(_:)`),
+    /// then advances any live bullets and Acid Sprayer zones regardless of
+    /// which weapon is currently equipped, since either could still be
+    /// mid-flight/mid-duration from an earlier activation.
+    private func advanceYetiWarWeapon(dt: TimeInterval) {
+        if currentWeapon.firingStyle != .passiveMelee {
+            weaponCooldownTimer -= dt
+            if weaponCooldownTimer <= 0 {
+                activateWeapon()
+                weaponCooldownTimer = currentWeapon.fireInterval
+            }
         }
+        advanceBullets(dt: dt)
+        advanceAcidZones(dt: dt)
+    }
 
-        // Bullets travel toward negative y — new terrain (and the horde)
-        // always scrolls in from the bottom of the screen, so that's
-        // "downhill, ahead of the skier," not up toward where things have
-        // already passed.
+    /// Dispatches to the equipped weapon's effect. Bullet-based styles all
+    /// go through `fireBullet(at:)`; the differences between them (splash,
+    /// piercing, leaving an acid zone) are resolved on impact in
+    /// `handleBulletContact(_:)`, not here. The proximity/instant "ability"
+    /// styles resolve immediately and never touch `bullets`.
+    private func activateWeapon() {
+        switch currentWeapon.firingStyle {
+        case .singleShot, .splash, .piercing, .acidZone:
+            fireBullet(at: [currentLane])
+        case .spread:
+            let lanes = [currentLane - 1, currentLane, currentLane + 1].filter { (0..<laneCount).contains($0) }
+            fireBullet(at: lanes)
+        case .hitscan:
+            activateHitscan()
+        case .melee:
+            activateMelee()
+        case .coneBurst:
+            activateConeBurst()
+        case .pulse:
+            activatePulse()
+        case .passiveMelee:
+            break
+        }
+    }
+
+    /// Spawns one `BulletNode` per lane, tinted/sized to the equipped
+    /// weapon so different weapons' shots read differently on screen even
+    /// though they share the one `sprite_bullet` texture (same
+    /// color-blend-tint technique `SkierNode.applySkin` uses for skins).
+    private func fireBullet(at lanes: [Int]) {
+        for lane in lanes {
+            let bullet = BulletNode()
+            bullet.position = CGPoint(x: laneCenterX(lane), y: skier.position.y - 20)
+            bullet.zPosition = 7
+            switch currentWeapon {
+            case .rocketLauncher:
+                bullet.applyStyle(scaleX: 1.8, scaleY: 1.8, tint: SKColor(red: 1.0, green: 0.45, blue: 0.15, alpha: 1))
+            case .iceCannon:
+                bullet.applyStyle(scaleX: 1.0, scaleY: 1.6, tint: SKColor(red: 0.3, green: 0.8, blue: 1.0, alpha: 1))
+            case .acidSprayer:
+                bullet.applyStyle(tint: SKColor(red: 0.4, green: 0.85, blue: 0.2, alpha: 1))
+            default:
+                break
+            }
+            addChild(bullet)
+            bullets.append(bullet)
+        }
+    }
+
+    /// Moves every live bullet at the equipped weapon's `projectileSpeed`
+    /// and despawns anything that's scrolled off the top. Bullets travel
+    /// toward negative y — new terrain (and the horde) always scrolls in
+    /// from the bottom of the screen, so that's "downhill, ahead of the
+    /// skier," not up toward where things have already passed.
+    private func advanceBullets(dt: TimeInterval) {
         let despawnY = -size.height / 2 - 40
         for bullet in bullets {
-            bullet.position.y -= difficulty.bulletSpeed * CGFloat(dt)
+            bullet.position.y -= currentWeapon.projectileSpeed * CGFloat(dt)
         }
         let (remaining, despawned) = bullets.partitioned { $0.position.y < despawnY }
         despawned.forEach { $0.removeFromParent() }
         bullets = remaining
     }
 
-    private func fireBullet() {
-        let bullet = BulletNode()
-        bullet.position = CGPoint(x: skier.position.x, y: skier.position.y - 20)
-        bullet.zPosition = 7
-        addChild(bullet)
-        bullets.append(bullet)
+    /// Leaves a lingering, visible kill-zone in `lane` for an Acid Sprayer
+    /// impact — no new node class needed, a plain translucent rect reads
+    /// fine for a "hazardous puddle" effect.
+    private func spawnAcidZone(lane: Int) {
+        let visual = SKShapeNode(rectOf: CGSize(width: laneWidth * 0.9, height: 60), cornerRadius: 8)
+        visual.fillColor = SKColor(red: 0.4, green: 0.85, blue: 0.2, alpha: 0.35)
+        visual.strokeColor = SKColor(red: 0.4, green: 0.85, blue: 0.2, alpha: 0.7)
+        visual.lineWidth = 2
+        visual.position = CGPoint(x: laneCenterX(lane), y: skierY)
+        visual.zPosition = 6
+        addChild(visual)
+        acidZones.append((lane, currentWeapon.acidZoneDuration, visual))
+    }
+
+    /// Ticks down and despawns every active Acid Sprayer zone; while a zone
+    /// is alive, kills any horde yeti passing through its lane near the
+    /// skier's row.
+    private func advanceAcidZones(dt: TimeInterval) {
+        for i in acidZones.indices.reversed() {
+            acidZones[i].timeRemaining -= dt
+            if acidZones[i].timeRemaining <= 0 {
+                acidZones[i].visual.removeFromParent()
+                acidZones.remove(at: i)
+                continue
+            }
+            let lane = acidZones[i].lane
+            hordeYetis
+                .filter { laneIndex(forX: $0.position.x) == lane && abs($0.position.y - skierY) < 40 }
+                .forEach { killHordeYeti($0) }
+        }
+    }
+
+    /// Brief expanding-ring flash for the non-projectile "ability" weapons
+    /// (melee/cone/pulse) — visual feedback that something happened, since
+    /// those styles have no traveling bullet of their own.
+    private func showEffectRing(at position: CGPoint, radius: CGFloat, color: SKColor) {
+        let ring = SKShapeNode(circleOfRadius: radius)
+        ring.strokeColor = color
+        ring.lineWidth = 3
+        ring.fillColor = color.withAlphaComponent(0.15)
+        ring.position = position
+        ring.zPosition = 9
+        addChild(ring)
+        ring.run(.sequence([
+            .group([.scale(to: 1.3, duration: 0.25), .fadeOut(withDuration: 0.25)]),
+            .removeFromParent(),
+        ]))
+    }
+
+    /// Feral Claws: kills anything within melee range, current lane ± 1.
+    private func activateMelee() {
+        let laneRange = (currentLane - 1)...(currentLane + 1)
+        hordeYetis
+            .filter { abs($0.position.y - skierY) <= currentWeapon.meleeRangeY && laneRange.contains(laneIndex(forX: $0.position.x)) }
+            .forEach { killHordeYeti($0) }
+        showEffectRing(at: CGPoint(x: skier.position.x, y: skierY), radius: 60, color: .orange)
+    }
+
+    /// Wyrm's Breath: same proximity check as melee, but across every lane.
+    private func activateConeBurst() {
+        hordeYetis
+            .filter { abs($0.position.y - skierY) <= currentWeapon.meleeRangeY }
+            .forEach { killHordeYeti($0) }
+        showEffectRing(at: CGPoint(x: 0, y: skierY), radius: playableHalfWidth, color: .red)
+    }
+
+    /// Optic Blast: instantly kills the nearest yeti in the current lane —
+    /// no travel time, no bullet.
+    private func activateHitscan() {
+        guard let target = hordeYetis
+            .filter({ laneIndex(forX: $0.position.x) == currentLane })
+            .min(by: { abs($0.position.y - skierY) < abs($1.position.y - skierY) })
+        else { return }
+        killHordeYeti(target)
+    }
+
+    /// Gravity Pulse: clears every currently-chasing horde yeti on screen,
+    /// regardless of lane or distance.
+    private func activatePulse() {
+        hordeYetis.filter { $0.chasesSkier }.forEach { killHordeYeti($0) }
+        showEffectRing(at: CGPoint(x: 0, y: skierY), radius: playableHalfWidth, color: .purple)
     }
 
     /// Most horde yetis walk straight up their spawn lane — deliberately not
@@ -775,12 +914,15 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         timeSinceLastYeti = 0
     }
 
-    @discardableResult
-    private func removeHordeYeti(from contact: SKPhysicsContact) -> YetiNode? {
+    /// Finds (without removing) the horde yeti in a contact. Used by both
+    /// `didBegin(_:)`'s skier-touched-a-yeti path (which then either removes
+    /// it itself and costs a life, or — for `.passiveMelee` — routes it
+    /// through `killHordeYeti(_:)` instead) and `handleBulletContact(_:)`'s
+    /// weapon-killed-a-yeti path, which needs the yeti to still be in
+    /// `hordeYetis` when a `.splash` style looks for nearby targets.
+    private func hordeYeti(from contact: SKPhysicsContact) -> YetiNode? {
         for node in [contact.bodyA.node, contact.bodyB.node] {
-            if let yeti = node as? YetiNode, let index = hordeYetis.firstIndex(where: { $0 === yeti }) {
-                yeti.removeFromParent()
-                hordeYetis.remove(at: index)
+            if let yeti = node as? YetiNode, hordeYetis.contains(where: { $0 === yeti }) {
                 return yeti
             }
         }
@@ -799,13 +941,46 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         return nil
     }
 
-    private func handleBulletContact(_ contact: SKPhysicsContact) {
-        guard removeBullet(from: contact) != nil else { return }
-        guard let hordeYeti = removeHordeYeti(from: contact) else { return }
+    /// Kills a horde yeti via a weapon (as opposed to the skier bumping
+    /// into one) — removes it and awards the standard kill reward. Shared
+    /// by every firing style so the reward logic lives in exactly one
+    /// place regardless of how the kill was resolved.
+    private func killHordeYeti(_ yeti: YetiNode) {
+        guard let index = hordeYetis.firstIndex(where: { $0 === yeti }) else { return }
+        hordeYetis.remove(at: index)
+        yeti.removeFromParent()
         yetiWarKillCount += 1
         distancePoints += difficulty.yetiWarKillDistanceBonus
         viewModel?.addSnowCoins(difficulty.yetiWarKillCoinBonus)
-        showFloatingText("+1", color: SKColor(red: 1.0, green: 0.85, blue: 0.3, alpha: 1), at: hordeYeti.position)
+        showFloatingText("+1", color: SKColor(red: 1.0, green: 0.85, blue: 0.3, alpha: 1), at: yeti.position)
+    }
+
+    /// Resolves a bullet hitting a horde yeti, differently per firing
+    /// style: `.piercing` kills but keeps the bullet alive so it can hit
+    /// the next yeti in its lane; `.splash` kills everything within
+    /// `splashRadius`; `.acidZone` leaves a lingering zone behind; every
+    /// other bullet style just kills the one yeti hit.
+    private func handleBulletContact(_ contact: SKPhysicsContact) {
+        guard let yeti = hordeYeti(from: contact) else { return }
+        switch currentWeapon.firingStyle {
+        case .piercing:
+            killHordeYeti(yeti)
+        case .splash:
+            let radius = currentWeapon.splashRadius
+            let caught = hordeYetis.filter {
+                $0 === yeti || hypot($0.position.x - yeti.position.x, $0.position.y - yeti.position.y) <= radius
+            }
+            caught.forEach { killHordeYeti($0) }
+            removeBullet(from: contact)
+        case .acidZone:
+            let lane = laneIndex(forX: yeti.position.x)
+            killHordeYeti(yeti)
+            spawnAcidZone(lane: lane)
+            removeBullet(from: contact)
+        default:
+            killHordeYeti(yeti)
+            removeBullet(from: contact)
+        }
     }
 
     // MARK: - Collisions
@@ -836,9 +1011,18 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         if categories & PhysicsCategory.yeti != 0 {
             // A Yeti War horde member costs a life, like an obstacle, rather
             // than ending the run outright — only a normal single/dual
-            // ambush yeti is an instant catch.
-            if removeHordeYeti(from: contact) != nil {
-                registerObstacleHit()
+            // ambush yeti is an instant catch. Pulse Blade (.passiveMelee)
+            // inverts this further: it never actively fires, so a skier/yeti
+            // contact IS its attack — the yeti dies and the player is
+            // rewarded instead of losing a life.
+            if let yeti = hordeYeti(from: contact) {
+                if currentWeapon.firingStyle == .passiveMelee {
+                    killHordeYeti(yeti)
+                } else {
+                    hordeYetis.removeAll { $0 === yeti }
+                    yeti.removeFromParent()
+                    registerObstacleHit()
+                }
                 return
             }
             despawnAllYetis()

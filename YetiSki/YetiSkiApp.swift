@@ -6,6 +6,10 @@ struct YetiSkiApp: App {
 
     init() {
         GameCenterManager.shared.authenticate()
+        AdManager.shared.configure()
+        Task { @MainActor in
+            StoreManager.shared.start()
+        }
     }
 
     var body: some Scene {
