@@ -19,11 +19,17 @@ final class AdManager: NSObject {
     private override init() {}
 
     /// Call once at app launch (mirrors `GameCenterManager.authenticate()`).
-    /// Starts the Mobile Ads SDK, requests App Tracking Transparency
-    /// authorization if not yet determined (required before any ad SDK that
-    /// could access IDFA loads, per Apple's review guidelines), then
-    /// preloads the first rewarded ad.
+    /// Tags the request configuration as not child-directed / not
+    /// under-age-of-consent (YetiSki carries a 9+ age rating, general
+    /// audience — see `AdManager`'s app-level docs), starts the Mobile Ads
+    /// SDK, requests App Tracking Transparency authorization if not yet
+    /// determined (required before any ad SDK that could access IDFA loads,
+    /// per Apple's review guidelines), then preloads the first rewarded ad.
     func configure() {
+        let requestConfiguration = GADMobileAds.sharedInstance().requestConfiguration
+        requestConfiguration.tagForChildDirectedTreatment = NSNumber(value: false)
+        requestConfiguration.tagForUnderAgeOfConsent = NSNumber(value: false)
+
         GADMobileAds.sharedInstance().start(completionHandler: nil)
         requestTrackingIfNeeded()
         loadAd()
