@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "theme": {
+    "accentColorHex": "#FF7A1A",
+    "banner": { "isVisible": true, "text": "🎃 Halloween Event: a Spooky Yeti is loose!" }
+  },
+  "weaponOverrides": null,
+  "assetOverrides": [
+    { "spriteName": "sprite_yeti_1", "url": "https://raw.githubusercontent.com/gitLee47/yetiski/main/RemoteConfig/assets/sprite_yeti_1_halloween.png" },
+    { "spriteName": "sprite_yeti_2", "url": "https://raw.githubusercontent.com/gitLee47/yetiski/main/RemoteConfig/assets/sprite_yeti_2_halloween.png" },
+    { "spriteName": "sprite_yeti_3", "url": "https://raw.githubusercontent.com/gitLee47/yetiski/main/RemoteConfig/assets/sprite_yeti_3_halloween.png" }
+  ]
+}

@@ -16,9 +16,14 @@ enum SpriteTextureLoader {
         if let cached = cache[name] {
             return cached
         }
-        guard let url = Bundle.main.url(forResource: name, withExtension: "png"),
-              let image = UIImage(contentsOfFile: url.path)
-        else {
+        let image: UIImage
+        if let remoteURL = RemoteConfigManager.shared.cachedAssetFileURL(for: name),
+           let remoteImage = UIImage(contentsOfFile: remoteURL.path) {
+            image = remoteImage
+        } else if let url = Bundle.main.url(forResource: name, withExtension: "png"),
+                  let bundleImage = UIImage(contentsOfFile: url.path) {
+            image = bundleImage
+        } else {
             assertionFailure("Missing sprite resource: \(name).png")
             return SKTexture()
         }
@@ -26,5 +31,12 @@ enum SpriteTextureLoader {
         texture.filteringMode = .nearest
         cache[name] = texture
         return texture
+    }
+
+    /// Called by `RemoteConfigManager` right after a replacement PNG for
+    /// `name` finishes downloading, so the next `texture(named:)` call
+    /// re-reads from disk instead of returning a stale in-memory texture.
+    static func invalidateCache(for name: String) {
+        cache.removeValue(forKey: name)
     }
 }

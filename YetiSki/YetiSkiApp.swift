@@ -7,6 +7,7 @@ struct YetiSkiApp: App {
     init() {
         GameCenterManager.shared.authenticate()
         AdManager.shared.configure()
+        RemoteConfigManager.shared.start()
         Task { @MainActor in
             StoreManager.shared.start()
         }

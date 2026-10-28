@@ -3,6 +3,7 @@ import SwiftUI
 struct MenuView: View {
     @EnvironmentObject var viewModel: GameViewModel
     @State private var showShop = false
+    @ObservedObject private var remoteConfig = RemoteConfigManager.shared
 
     var body: some View {
         ZStack {
@@ -28,6 +29,8 @@ struct MenuView: View {
                 Text("Dodge the slope. Outrun the yeti.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
+
+                SeasonalBannerView()
 
                 if viewModel.highScore > 0 {
                     Label("Best: \(viewModel.highScore) m", systemImage: "trophy.fill")
@@ -63,7 +66,7 @@ struct MenuView: View {
                         .padding(.vertical, 16)
                 }
                 .buttonStyle(.borderedProminent)
-                .tint(.blue)
+                .tint(remoteConfig.accentColor ?? .blue)
                 .padding(.horizontal, 40)
 
                 Button {

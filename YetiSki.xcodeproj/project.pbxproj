@@ -23,8 +23,10 @@
 		2947DDB7E9E5A323E6778065 /* ScoreCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A12B46936D013026B4383A /* ScoreCardView.swift */; };
 		2B15B4E15B2BF455ABB4E247 /* WeaponKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53A645019C233AC9CC117EE5 /* WeaponKind.swift */; };
 		3041DA8C5B5AD4912F8D0E49 /* GameOverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C43F1DFCEC9C8CCF68A4DD3 /* GameOverView.swift */; };
+		33846EA0AAE3ABFF3575CD24 /* RemoteConfigManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0FEADD1E08175369444819D /* RemoteConfigManager.swift */; };
 		35C35F005D9302218E3B4916 /* HapticsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 352F0BD10382947B6E637EDC /* HapticsManager.swift */; };
 		3D8BEC078532BF1C269DB6A5 /* DailyRewardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CB647824C3B08507F76FD2A /* DailyRewardView.swift */; };
+		43DE6223F8EB7D293DAF53A3 /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E09F1E1523932ED6081155 /* Color+Hex.swift */; };
 		4623CE74774345B7C269894C /* sprite_weapon_machineGun.png in Resources */ = {isa = PBXBuildFile; fileRef = D98CD766EC08CB62FF0F5D56 /* sprite_weapon_machineGun.png */; };
 		4753BBFD7DED43C15D9D4C28 /* sprite_skin_preview_golden.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C48F30FA5535558B5449EC2 /* sprite_skin_preview_golden.png */; };
 		47C33AB4BB7A7B819A5F19EE /* StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5487CCE739B2600961C991EB /* StoreManager.swift */; };
@@ -68,11 +70,13 @@
 		BC70E21A44A6D6F68FA7B818 /* sprite_pickup_speed.png in Resources */ = {isa = PBXBuildFile; fileRef = 1933249A5D54A18A0B701154 /* sprite_pickup_speed.png */; };
 		BFE6450C703CE5A1DE5A3097 /* PixelArtImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4799FA75F1C8C60CA59EF272 /* PixelArtImage.swift */; };
 		C1AD6DDAB7E680FB19433E90 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F6DD26F963A10BC6D40186E /* MenuView.swift */; };
+		C2D59AE3C17BE073E359A35B /* RemoteConfigModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A91589D1FC9975E30959472 /* RemoteConfigModels.swift */; };
 		C66097489BE08FF478EA7373 /* SPRITES_README.md in Resources */ = {isa = PBXBuildFile; fileRef = 2D73976EE8A0753980542330 /* SPRITES_README.md */; };
 		CCC398A88113DB6B917B1711 /* RampNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508CC28C61F9ED237E7819BB /* RampNode.swift */; };
 		CD9F31646E6230BAD1575BD1 /* sprite_weapon_rocketLauncher.png in Resources */ = {isa = PBXBuildFile; fileRef = 0E697E8868F6B4E53FA220F5 /* sprite_weapon_rocketLauncher.png */; };
 		CEE459B20C3A68C36975DF24 /* sprite_weapon_pulseBlade.png in Resources */ = {isa = PBXBuildFile; fileRef = 799B1753A78691B749B9CBC7 /* sprite_weapon_pulseBlade.png */; };
 		CF4D01FE54EC707AA8796CA8 /* sprite_pickup_shield.png in Resources */ = {isa = PBXBuildFile; fileRef = 0253A0C08DDA9560157AA02D /* sprite_pickup_shield.png */; };
+		DB6C291F8A2E63573946F7AC /* SeasonalBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1576E88B01E812192A58FB4E /* SeasonalBannerView.swift */; };
 		DB7CA174659FFCB6D196E150 /* HUDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31785C1B5564A00DDDBDF4B5 /* HUDView.swift */; };
 		E20C8D49E45D7B645BB51199 /* sprite_weapon_shotgun.png in Resources */ = {isa = PBXBuildFile; fileRef = F1E635B95A16F4D5A8DA00FD /* sprite_weapon_shotgun.png */; };
 		E22C709A3E3B7C7D8844269D /* SoundManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C859B1E3C4344D0A9C0CE72 /* SoundManager.swift */; };
@@ -95,6 +99,7 @@
 		0E697E8868F6B4E53FA220F5 /* sprite_weapon_rocketLauncher.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_weapon_rocketLauncher.png; sourceTree = "<group>"; };
 		0F6DD26F963A10BC6D40186E /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		133188AECFBD8D7D65A5DEF4 /* sprite_weapon_acidSprayer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_weapon_acidSprayer.png; sourceTree = "<group>"; };
+		1576E88B01E812192A58FB4E /* SeasonalBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonalBannerView.swift; sourceTree = "<group>"; };
 		173F453B0E349B3C8119CF35 /* sprite_icicle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_icicle.png; sourceTree = "<group>"; };
 		1933249A5D54A18A0B701154 /* sprite_pickup_speed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_pickup_speed.png; sourceTree = "<group>"; };
 		1C43F1DFCEC9C8CCF68A4DD3 /* GameOverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOverView.swift; sourceTree = "<group>"; };
@@ -122,6 +127,7 @@
 		5487CCE739B2600961C991EB /* StoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreManager.swift; sourceTree = "<group>"; };
 		57782A0C962EE5C3D1A9969B /* sprite_weapon_gravityPulse.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_weapon_gravityPulse.png; sourceTree = "<group>"; };
 		59993584587C7845BAB3B25D /* GameContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameContainerView.swift; sourceTree = "<group>"; };
+		5A91589D1FC9975E30959472 /* RemoteConfigModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfigModels.swift; sourceTree = "<group>"; };
 		5C2515A26A49931ED49EBE69 /* IcicleNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IcicleNode.swift; sourceTree = "<group>"; };
 		5C6894268E7CDB5B93201B77 /* YetiSkiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YetiSkiApp.swift; sourceTree = "<group>"; };
 		5FF693B6BF4311543EC2BDBC /* ContinueOfferView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContinueOfferView.swift; sourceTree = "<group>"; };
@@ -155,6 +161,7 @@
 		CDB0C575F2D2CCAFAC74CF13 /* sprite_weapon_iceCannon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_weapon_iceCannon.png; sourceTree = "<group>"; };
 		CEAB453E90EFD9E31E59197E /* sprite_bullet.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_bullet.png; sourceTree = "<group>"; };
 		D5175C05B45EEAEDFC0584FF /* Products.storekit */ = {isa = PBXFileReference; path = Products.storekit; sourceTree = "<group>"; };
+		D7E09F1E1523932ED6081155 /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
 		D98CD766EC08CB62FF0F5D56 /* sprite_weapon_machineGun.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_weapon_machineGun.png; sourceTree = "<group>"; };
 		DA9FA86FE7FEE3BD9570FCEB /* sprite_yeti_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_yeti_2.png; sourceTree = "<group>"; };
 		DAC36302B3EFE6FB8A4BD391 /* HighScoreStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighScoreStore.swift; sourceTree = "<group>"; };
@@ -165,6 +172,7 @@
 		E6FA727E03974E033E8B1940 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		E7A12B46936D013026B4383A /* ScoreCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreCardView.swift; sourceTree = "<group>"; };
 		E9CD2D1177ACAAC805B56A91 /* sprite_weapon_opticBlast.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_weapon_opticBlast.png; sourceTree = "<group>"; };
+		F0FEADD1E08175369444819D /* RemoteConfigManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfigManager.swift; sourceTree = "<group>"; };
 		F1E635B95A16F4D5A8DA00FD /* sprite_weapon_shotgun.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_weapon_shotgun.png; sourceTree = "<group>"; };
 		FE0E6BE2B715587FE850C3B4 /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
 		FF4A6D0EF7D675719140280E /* YetiSki.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = YetiSki.entitlements; sourceTree = "<group>"; };
@@ -246,6 +254,7 @@
 			isa = PBXGroup;
 			children = (
 				364FD7B0CDECE106EE9613BD /* CoinShopView.swift */,
+				D7E09F1E1523932ED6081155 /* Color+Hex.swift */,
 				5FF693B6BF4311543EC2BDBC /* ContinueOfferView.swift */,
 				9CB647824C3B08507F76FD2A /* DailyRewardView.swift */,
 				59993584587C7845BAB3B25D /* GameContainerView.swift */,
@@ -256,6 +265,7 @@
 				4799FA75F1C8C60CA59EF272 /* PixelArtImage.swift */,
 				E2BFE754FFDD9F49D0F39A56 /* RootView.swift */,
 				E7A12B46936D013026B4383A /* ScoreCardView.swift */,
+				1576E88B01E812192A58FB4E /* SeasonalBannerView.swift */,
 				6C7C41E355ACE1EBCBE3B7DA /* SkinShopView.swift */,
 				2AF6EA3801C767EB90EA4D0E /* YetiWarWeaponSelectView.swift */,
 			);
@@ -276,6 +286,15 @@
 				2E579C217F05F4E8280375E8 /* AdManager.swift */,
 			);
 			path = Ad;
+			sourceTree = "<group>";
+		};
+		A7CA654E0569A35913D85134 /* Remote */ = {
+			isa = PBXGroup;
+			children = (
+				F0FEADD1E08175369444819D /* RemoteConfigManager.swift */,
+				5A91589D1FC9975E30959472 /* RemoteConfigModels.swift */,
+			);
+			path = Remote;
 			sourceTree = "<group>";
 		};
 		AC9DB21FE0423D89487AC502 /* Game */ = {
@@ -334,6 +353,7 @@
 				D6671283B586AE249FB79F0C /* GameCenter */,
 				E7EA594CCF4D8E3641F06832 /* Haptics */,
 				4EDFC968C1EF181F5518120F /* Persistence */,
+				A7CA654E0569A35913D85134 /* Remote */,
 				B46B82E83F1AA83F3773F625 /* Resources */,
 				5547E0C148B38B9CEA6C30A0 /* Views */,
 			);
@@ -483,6 +503,7 @@
 				938C8738D59D4387B09D7136 /* BulletNode.swift in Sources */,
 				B163D8B351F2F9F5B53EE21A /* CoinBundle.swift in Sources */,
 				F856396E96A53B6C00E336A7 /* CoinShopView.swift in Sources */,
+				43DE6223F8EB7D293DAF53A3 /* Color+Hex.swift in Sources */,
 				761320784D46AC329B4005FB /* ContinueOfferView.swift in Sources */,
 				3D8BEC078532BF1C269DB6A5 /* DailyRewardView.swift in Sources */,
 				14F64AF53AB75D756FBB97BF /* DifficultyManager.swift in Sources */,
@@ -503,8 +524,11 @@
 				BFE6450C703CE5A1DE5A3097 /* PixelArtImage.swift in Sources */,
 				9F1A1697E680FE7C5F3FC467 /* PlayerProgressStore.swift in Sources */,
 				CCC398A88113DB6B917B1711 /* RampNode.swift in Sources */,
+				33846EA0AAE3ABFF3575CD24 /* RemoteConfigManager.swift in Sources */,
+				C2D59AE3C17BE073E359A35B /* RemoteConfigModels.swift in Sources */,
 				8F12FE6E3E767137DC993A58 /* RootView.swift in Sources */,
 				2947DDB7E9E5A323E6778065 /* ScoreCardView.swift in Sources */,
+				DB6C291F8A2E63573946F7AC /* SeasonalBannerView.swift in Sources */,
 				E8BF0FA6CFF28D39938D87EE /* SkierNode.swift in Sources */,
 				FA08B5FE89082CBF5118F7AC /* SkierSkin.swift in Sources */,
 				166CE1BFA9F230340B4F1605 /* SkinShopView.swift in Sources */,

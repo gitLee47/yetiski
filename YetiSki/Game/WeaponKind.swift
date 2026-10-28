@@ -44,7 +44,20 @@ enum WeaponKind: String, CaseIterable, Identifiable, Hashable {
 
     /// Level at which this weapon unlocks for free. `nil` means there's no
     /// free path — it can only be unlocked by spending Snow Coins.
+    ///
+    /// Checks `RemoteConfigManager` first — a remote override can change
+    /// this value, or explicitly remove the free path entirely (coin-only),
+    /// without a new build. Falls back to `hardcodedUnlockLevel` whenever no
+    /// override exists (including whenever the remote config hasn't loaded
+    /// at all, e.g. first launch with no network).
     var unlockLevel: Int? {
+        if let override = RemoteConfigManager.shared.weaponOverride(for: self), override.hasUnlockLevelOverride {
+            return override.unlockLevel
+        }
+        return hardcodedUnlockLevel
+    }
+
+    private var hardcodedUnlockLevel: Int? {
         switch self {
         case .machineGun: return nil
         case .shotgun: return 8
@@ -69,8 +82,16 @@ enum WeaponKind: String, CaseIterable, Identifiable, Hashable {
     /// path at all, and `.pulseBlade` — which removes death-by-contact
     /// entirely — stays the single most expensive item as the top "premium"
     /// weapon. See `CoinBundle` for how the real-money bundle sizes are
-    /// anchored to these exact numbers.
+    /// anchored to these exact numbers (a remote override below can make
+    /// that anchoring doc-comment-only-stale — a known, non-blocking
+    /// tradeoff).
+    ///
+    /// Checks `RemoteConfigManager` first, same as `unlockLevel` above.
     var coinCost: Int {
+        RemoteConfigManager.shared.weaponOverride(for: self)?.coinCost ?? hardcodedCoinCost
+    }
+
+    private var hardcodedCoinCost: Int {
         switch self {
         case .machineGun: return 0
         case .shotgun: return 200
