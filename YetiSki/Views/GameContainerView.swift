@@ -11,6 +11,7 @@ struct GameContainerView: View {
         scene.scaleMode = .resizeFill
         return scene
     }()
+    @State private var hasStartedFirstRun = false
 
     var body: some View {
         GeometryReader { proxy in
@@ -40,6 +41,10 @@ struct GameContainerView: View {
             .onAppear {
                 scene.size = proxy.size
                 scene.viewModel = viewModel
+                // A full-screen modal (the rewarded ad) re-fires onAppear when
+                // it dismisses — only the first appearance may start a run.
+                guard !hasStartedFirstRun else { return }
+                hasStartedFirstRun = true
                 scene.startRun()
             }
             .onChange(of: proxy.size) { _, newSize in

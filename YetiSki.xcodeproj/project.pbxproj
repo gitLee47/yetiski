@@ -24,6 +24,7 @@
 		2B15B4E15B2BF455ABB4E247 /* WeaponKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53A645019C233AC9CC117EE5 /* WeaponKind.swift */; };
 		3041DA8C5B5AD4912F8D0E49 /* GameOverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C43F1DFCEC9C8CCF68A4DD3 /* GameOverView.swift */; };
 		33846EA0AAE3ABFF3575CD24 /* RemoteConfigManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0FEADD1E08175369444819D /* RemoteConfigManager.swift */; };
+		3413BE9E0065EF435A13DF59 /* GoogleUserMessagingPlatform in Frameworks */ = {isa = PBXBuildFile; productRef = B9CC1CD1FC38387FEE5F1688 /* GoogleUserMessagingPlatform */; };
 		35C35F005D9302218E3B4916 /* HapticsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 352F0BD10382947B6E637EDC /* HapticsManager.swift */; };
 		3D8BEC078532BF1C269DB6A5 /* DailyRewardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CB647824C3B08507F76FD2A /* DailyRewardView.swift */; };
 		43DE6223F8EB7D293DAF53A3 /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E09F1E1523932ED6081155 /* Color+Hex.swift */; };
@@ -184,6 +185,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5F5A90D76904CDC74D1E51EB /* GoogleMobileAds in Frameworks */,
+				3413BE9E0065EF435A13DF59 /* GoogleUserMessagingPlatform in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -402,6 +404,7 @@
 			name = YetiSki;
 			packageProductDependencies = (
 				E3D30BCEB9D015FB138A2B2D /* GoogleMobileAds */,
+				B9CC1CD1FC38387FEE5F1688 /* GoogleUserMessagingPlatform */,
 			);
 			productName = YetiSki;
 			productReference = A63DFCD0EB9B2879E8165B21 /* YetiSki.app */;
@@ -433,6 +436,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				12F16F313481A092E07D73B8 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
+				A0E3DB406046E9227572628E /* XCRemoteSwiftPackageReference "swift-package-manager-google-user-messaging-platform" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 150DD1B71928497E5EE98B50 /* Products */;
@@ -581,7 +585,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = B69F6WJQ9N;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -595,7 +599,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -679,7 +683,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = B69F6WJQ9N;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -699,7 +703,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.2;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -743,9 +747,22 @@
 				minimumVersion = 11.13.0;
 			};
 		};
+		A0E3DB406046E9227572628E /* XCRemoteSwiftPackageReference "swift-package-manager-google-user-messaging-platform" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/swift-package-manager-google-user-messaging-platform.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.7.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		B9CC1CD1FC38387FEE5F1688 /* GoogleUserMessagingPlatform */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A0E3DB406046E9227572628E /* XCRemoteSwiftPackageReference "swift-package-manager-google-user-messaging-platform" */;
+			productName = GoogleUserMessagingPlatform;
+		};
 		E3D30BCEB9D015FB138A2B2D /* GoogleMobileAds */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 12F16F313481A092E07D73B8 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;

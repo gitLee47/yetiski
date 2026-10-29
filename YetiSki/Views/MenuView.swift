@@ -4,6 +4,7 @@ struct MenuView: View {
     @EnvironmentObject var viewModel: GameViewModel
     @State private var showShop = false
     @ObservedObject private var remoteConfig = RemoteConfigManager.shared
+    @ObservedObject private var adManager = AdManager.shared
 
     var body: some View {
         ZStack {
@@ -97,6 +98,13 @@ struct MenuView: View {
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 40)
+
+                if adManager.isPrivacyOptionsRequired {
+                    Button("Privacy Choices") {
+                        adManager.presentPrivacyOptions()
+                    }
+                    .font(.footnote)
+                }
 
                 Spacer(minLength: 40)
             }

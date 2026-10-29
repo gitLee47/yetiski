@@ -1,47 +1,132 @@
 import GoogleMobileAds
+import UserMessagingPlatform
 import AppTrackingTransparency
 import UIKit
 
 /// Wraps Google AdMob's rewarded ad for the "Watch Ad — Free Continue" flow
-/// (see `ContinueOfferView`).
+/// (see `ContinueOfferView`), plus the GDPR/US-state consent flow via Google's
+/// User Messaging Platform that has to run before any ad loads.
 ///
 /// Uses the real AdMob App ID and rewarded ad unit ID, registered under the
 /// user's own AdMob account — see `project.yml`'s `GADApplicationIdentifier`
-/// for the App ID side.
-final class AdManager: NSObject {
+/// for the App ID side. The consent form itself is configured in AdMob's
+/// "Privacy & messaging" dashboard, not in code; until a message is published
+/// there, players in regulated regions simply get no ads.
+final class AdManager: NSObject, ObservableObject {
     static let shared = AdManager()
 
     private let rewardedAdUnitID = "ca-app-pub-8714059521970500/8312979483"
 
+    /// Whether to show a "Privacy Choices" entry point (see `MenuView`) —
+    /// Google requires one for players whose consent was collected via the
+    /// form, so they can change their choice later.
+    @Published private(set) var isPrivacyOptionsRequired = false
+
     private var rewardedAd: GADRewardedAd?
     private var completion: ((Bool) -> Void)?
+    private var hasStartedSDK = false
 
     private override init() {}
 
     /// Call once at app launch (mirrors `GameCenterManager.authenticate()`).
-    /// Tags the request configuration as not child-directed / not
-    /// under-age-of-consent (YetiSki carries a 9+ age rating, general
-    /// audience — see `AdManager`'s app-level docs), starts the Mobile Ads
-    /// SDK, requests App Tracking Transparency authorization if not yet
-    /// determined (required before any ad SDK that could access IDFA loads,
-    /// per Apple's review guidelines), then preloads the first rewarded ad.
+    /// Tags requests as not child-directed / not under-age-of-consent
+    /// (YetiSki carries a 9+ general-audience rating), then gathers consent:
+    /// refreshes consent info, presents Google's consent form if this player
+    /// needs one, requests App Tracking Transparency, and only then starts
+    /// the Mobile Ads SDK and preloads the first rewarded ad.
     func configure() {
         let requestConfiguration = GADMobileAds.sharedInstance().requestConfiguration
         requestConfiguration.tagForChildDirectedTreatment = NSNumber(value: false)
         requestConfiguration.tagForUnderAgeOfConsent = NSNumber(value: false)
 
+        // Consent given in a previous session already permits ads — don't
+        // make the player wait on the network round-trip below for them.
+        if UMPConsentInformation.sharedInstance.canRequestAds {
+            startSDKIfNeeded()
+        }
+
+        let parameters = UMPRequestParameters()
+        parameters.tagForUnderAgeOfConsent = false
+        UMPConsentInformation.sharedInstance.requestConsentInfoUpdate(with: parameters) { [weak self] error in
+            if let error {
+                print("Consent info update failed: \(error.localizedDescription)")
+                self?.finishConsentFlow()
+                return
+            }
+            self?.presentConsentFormIfRequired(attempt: 0)
+        }
+    }
+
+    /// Re-opens Google's consent form so the player can change their choice.
+    /// Only meaningful while `isPrivacyOptionsRequired` is true.
+    func presentPrivacyOptions() {
+        guard let viewController = Self.topViewController() else { return }
+        UMPConsentForm.presentPrivacyOptionsForm(from: viewController) { error in
+            if let error {
+                print("Privacy options form failed: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    /// The consent info update can finish before SwiftUI has a window up at
+    /// launch, so retry briefly until there's a view controller to present on.
+    private func presentConsentFormIfRequired(attempt: Int) {
+        guard let viewController = Self.topViewController() else {
+            guard attempt < 10 else {
+                finishConsentFlow()
+                return
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+                self?.presentConsentFormIfRequired(attempt: attempt + 1)
+            }
+            return
+        }
+        UMPConsentForm.loadAndPresentIfRequired(from: viewController) { [weak self] error in
+            if let error {
+                print("Consent form failed: \(error.localizedDescription)")
+            }
+            self?.finishConsentFlow()
+        }
+    }
+
+    private func finishConsentFlow() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            isPrivacyOptionsRequired =
+                UMPConsentInformation.sharedInstance.privacyOptionsRequirementStatus == .required
+            // Google's recommended order: GDPR consent first, then ATT.
+            requestTrackingIfNeeded { [weak self] in
+                guard UMPConsentInformation.sharedInstance.canRequestAds else { return }
+                self?.startSDKIfNeeded()
+            }
+        }
+    }
+
+    private func requestTrackingIfNeeded(then completion: @escaping () -> Void) {
+        guard ATTrackingManager.trackingAuthorizationStatus == .notDetermined else {
+            completion()
+            return
+        }
+        ATTrackingManager.requestTrackingAuthorization { _ in
+            DispatchQueue.main.async(execute: completion)
+        }
+    }
+
+    private func startSDKIfNeeded() {
+        guard !hasStartedSDK else { return }
+        hasStartedSDK = true
         GADMobileAds.sharedInstance().start(completionHandler: nil)
-        requestTrackingIfNeeded()
         loadAd()
     }
 
-    private func requestTrackingIfNeeded() {
-        guard ATTrackingManager.trackingAuthorizationStatus == .notDetermined else { return }
-        // Small delay so the system prompt doesn't appear before the app's
-        // first screen is visible — Apple's own guidance.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            ATTrackingManager.requestTrackingAuthorization { _ in }
+    private static func topViewController() -> UIViewController? {
+        var top = UIApplication.shared.connectedScenes
+            .compactMap { ($0 as? UIWindowScene)?.keyWindow?.rootViewController }
+            .first
+        while let presented = top?.presentedViewController {
+            top = presented
         }
+        return top
     }
 
     private func loadAd() {
